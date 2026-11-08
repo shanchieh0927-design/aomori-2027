@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2027 青森之旅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1d2a36; --muted:#5f6f7e; --line:#dfe6ec; --bg:#f6f8fa; --card:#fff;
+    --snow:#eef4f8; --deep:#183b56; --accent:#c8423b; --accent-soft:#fbebeb;
+    --ok:#2f7a4a; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:"Noto Sans TC",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;font-size:15px}
+  button,input,textarea,select{font:inherit;color:inherit}
+  a{color:var(--deep)}
+  .wrap{max-width:860px;margin:0 auto;padding:0 18px}
+
+  /* hero */
+  header.hero{background:linear-gradient(160deg,#183b56 0%,#2f5f82 55%,#8fb3cc 100%);color:#fff;position:relative;overflow:hidden}
+  header.hero .wrap{padding-top:44px;padding-bottom:40px;position:relative;z-index:1}
+  .hero .kicker{letter-spacing:.2em;font-size:12px;opacity:.85}
+  .hero h1{font-family:"Noto Serif TC",serif;font-weight:900;font-size:clamp(34px,7vw,54px);margin:6px 0 6px;line-height:1.15}
+  .hero .sub{opacity:.92;font-size:15px}
+  .hero .count{display:inline-block;margin-top:18px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 14px;font-size:14px}
+  .flakes{position:absolute;inset:0;pointer-events:none;opacity:.5}
+
+  nav.days{position:sticky;top:0;z-index:5;background:rgba(246,248,250,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  nav.days .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:10px;padding-bottom:10px;scrollbar-width:none}
+  nav.days a{flex:none;text-decoration:none;color:var(--ink);font-size:13px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);white-space:nowrap}
+  nav.days a:hover{border-color:var(--deep)}
+
+  section{margin:30px 0}
+  h2{font-family:"Noto Serif TC",serif;font-size:22px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+  h2 .tag{font-family:"Noto Sans TC";font-size:12px;font-weight:500;color:var(--muted);background:var(--snow);padding:2px 10px;border-radius:999px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:620px){.grid2{grid-template-columns:1fr}}
+  .flight .code{font-weight:700;color:var(--deep);font-size:18px}
+  .flight .route{font-size:14px;color:var(--muted)}
+  .flight .time{font-size:20px;font-weight:700;margin-top:4px}
+
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
+  th{font-size:12px;color:var(--muted);font-weight:500}
+  .pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;background:var(--snow);color:var(--deep);white-space:nowrap}
+  .pill.done{background:#e5f4e4;color:var(--ok)}
+  .pill.wait{background:#f9eeda;color:#8a5a12}
+
+  .day{scroll-margin-top:64px}
+  .day-head{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}
+  .day-head .date{font-family:"Noto Serif TC",serif;font-weight:900;font-size:28px;color:var(--deep);line-height:1}
+  .day-head .title{font-size:17px;font-weight:700}
+  .stops{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);margin-left:6px}
+  .stop{position:relative;padding:4px 0 14px 20px}
+  .stop::before{content:"";position:absolute;left:-7px;top:12px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--deep)}
+  .stop.must::before{background:var(--accent);border-color:var(--accent)}
+  .stop .row{display:flex;gap:10px;align-items:flex-start}
+  .stop .t{flex:none;min-width:78px;font-size:13px;color:var(--muted);padding-top:2px}
+  .stop .body{flex:1;min-width:0}
+  .stop .ttl{font-weight:700}
+  .stop .ttl .must{font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 6px;margin-left:6px;font-weight:500;vertical-align:2px}
+  .stop .note{color:var(--muted);font-size:14px;white-space:pre-wrap;word-break:break-word}
+
+  .tools{flex:none;display:flex;gap:2px;opacity:.0;transition:opacity .15s}
+  .stop:hover .tools,.li:hover .tools,.tools:focus-within,.touch .tools{opacity:1}
+  .ib{border:0;background:transparent;cursor:pointer;width:28px;height:28px;border-radius:8px;color:var(--muted);display:inline-grid;place-items:center;font-size:14px}
+  .ib:hover{background:var(--snow);color:var(--ink)}
+  .ib.del:hover{background:var(--accent-soft);color:var(--accent)}
+
+  .add{margin:4px 0 0 20px;border:1px dashed #b9c6d1;background:transparent;color:var(--muted);border-radius:10px;padding:6px 12px;cursor:pointer;font-size:13px}
+  .add:hover{color:var(--deep);border-color:var(--deep);background:#fff}
+
+  form.edit{background:var(--snow);border-radius:12px;padding:12px;display:grid;gap:8px;margin:4px 0}
+  form.edit .r{display:flex;gap:8px;flex-wrap:wrap}
+  form.edit input,form.edit textarea{border:1px solid #c9d5df;border-radius:8px;padding:7px 10px;background:#fff;width:100%}
+  form.edit input.tm{width:120px;flex:none}
+  form.edit input.tt{flex:1;min-width:180px;width:auto}
+  form.edit textarea{min-height:64px;resize:vertical}
+  form.edit label.chk{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+  .btns{display:flex;gap:8px;justify-content:flex-end;align-items:center}
+  .btn{border:0;border-radius:9px;padding:7px 14px;cursor:pointer;font-weight:500}
+  .btn.primary{background:var(--deep);color:#fff}
+  .btn.ghost{background:transparent;color:var(--muted)}
+  .btn.danger{background:var(--accent);color:#fff}
+  .confirm{font-size:13px;color:var(--accent);display:flex;gap:8px;align-items:center;margin-top:6px}
+
+  .list{list-style:none;margin:0;padding:0}
+  .li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
+  .li:last-child{border-bottom:0}
+  .li input[type=checkbox]{width:18px;height:18px;margin-top:3px;accent-color:var(--deep);flex:none}
+  .li .txt{flex:1;white-space:pre-wrap;word-break:break-word}
+  .li.done .txt{color:#9aa7b2;text-decoration:line-through}
+  .addrow{display:flex;gap:8px;margin-top:10px}
+  .addrow input{flex:1;border:1px solid var(--line);border-radius:9px;padding:8px 12px;background:#fff}
+
+  .status{font-size:13px;color:var(--muted);text-align:center;padding:10px}
+  .banner{background:#f9eeda;color:#7a5410;border-radius:10px;padding:10px 14px;font-size:14px;margin-top:18px}
+  .links a{display:block;padding:6px 0;font-size:14px}
+  footer{color:var(--muted);font-size:12px;text-align:center;padding:30px 0 50px}
+  .ro .tools,.ro .add,.ro .addrow{display:none!important}
+</style>
+</head>
+<body>
+<header class="hero">
+  <svg class="flakes" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="#fff">
+      <circle cx="60" cy="40" r="2"/><circle cx="140" cy="120" r="1.5"/><circle cx="220" cy="60" r="2.5"/><circle cx="310" cy="200" r="1.5"/>
+      <circle cx="400" cy="90" r="2"/><circle cx="470" cy="30" r="1.5"/><circle cx="540" cy="160" r="2.5"/><circle cx="620" cy="70" r="1.5"/>
+      <circle cx="700" cy="220" r="2"/><circle cx="760" cy="110" r="1.5"/><circle cx="90" cy="250" r="1.5"/><circle cx="360" cy="270" r="2"/>
+    </g>
+    <path d="M0 300 L120 190 L200 240 L330 140 L440 230 L560 160 L680 240 L800 180 L800 300 Z" fill="#fff" opacity=".18"/>
+    <path d="M0 300 L90 240 L210 280 L360 210 L520 270 L650 220 L800 270 L800 300 Z" fill="#fff" opacity=".28"/>
+  </svg>
+  <div class="wrap">
+    <div class="kicker">AOMORI · WINTER 2027</div>
+    <h1>青森之旅</h1>
+    <div class="sub">2027/3/6（六）～ 3/11（四）・六天五夜・3 人・不開車</div>
+    <div class="count" id="countdown"></div>
+  </div>
+</header>
+
+<nav class="days"><div class="wrap" id="daynav">
+  <a href="#overview">航班與住宿</a>
+</div></nav>
+
+<main class="wrap" id="app">
+  <div id="banner"></div>
+
+  <section id="overview">
+    <h2>航班 <span class="tag">長榮航空</span></h2>
+    <div class="grid2">
+      <div class="card flight"><div class="code">BR122 去程</div><div class="route">3/6（六）桃園 TPE → 青森 AOJ</div><div class="time">09:55 → 14:20</div></div>
+      <div class="card flight"><div class="code">BR121 回程</div><div class="route">3/11（四）青森 AOJ → 桃園 TPE</div><div class="time">15:30 → 19:00</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>住宿</h2>
+    <div class="card" style="padding:6px 14px">
+      <table><thead><tr><th style="width:90px">日期</th><th>飯店</th><th style="width:80px">狀態</th><th style="width:64px"></th></tr></thead>
+      <tbody id="stays"></tbody></table>
+      <button class="add" id="addStay" style="margin:10px 0 8px">＋ 新增住宿</button>
+    </div>
+  </section>
+
+  <div id="days"></div>
+
+  <section id="ideas-sec">
+    <h2>備選與想法</h2>
+    <div class="card"><ul class="list" id="ideas"></ul>
+      <form class="addrow" data-add="ideas"><input placeholder="加一個想法或備案…" maxlength="400"><button class="btn primary">加入</button></form>
+    </div>
+  </section>
+
+  <section id="todo-sec">
+    <h2>待辦清單 <span class="tag" id="todoCount"></span></h2>
+    <div class="card"><ul class="list" id="todos"></ul>
+      <form class="addrow" data-add="todos"><input placeholder="新增待辦…" maxlength="300"><button class="btn primary">加入</button></form>
+    </div>
+  </section>
+
+  <section>
+    <h2>參考連結</h2>
+    <div class="card links">
+      <a href="https://flights.evaair.com/zh-tw/航班-飛往-青森">長榮航空 青森航班</a>
+      <a href="https://zh-tw-46522.site-translation.com/">ReLabo Medical Spa &amp; Stay</a>
+      <a href="https://hoshinoresorts.com/zh_tw/hotels/oirasekeiryu/">星野 奧入瀨溪流飯店</a>
+      <a href="https://hoshinoresorts.com/zh_tw/hotels/oirasekeiryu/activities/15441/">星野：春雪山毛櫸林雪地鞋漫步</a>
+      <a href="https://hoshinoresorts.com/zh_tw/hotels/oirasekeiryu/activities/12986/">星野：奧入瀨溪流巴士觀光</a>
+      <a href="https://www.aomori-museum.jp/">青森縣立美術館</a>
+      <a href="https://rurubu.jp/andmore/spot/80001995">淺蟲水族館</a>
+      <a href="https://www.nap-camp.com/mag/92936">廣田神社</a>
+      <a href="https://jamesdiscover.tw/blog/8497">八甲田纜車攻略</a>
+      <a href="https://www.ikyu.com/00080339/">Hotel Route-Inn 弘前駅前</a>
+      <a href="https://www.navitime.co.jp/bus/diagram/timelist?departure=00025823&amp;arrival=00500993&amp;line=00081174">弘前巴士總站 → 青森機場 時刻表（NAVITIME）</a>
+    </div>
+  </section>
+  <div class="status" id="status">載入中…</div>
+</main>
+<footer>2027 青森之旅</footer>
+
+<script>
+// ===== 行程資料：在 GitHub 上直接修改這一段就能更新網站 =====
+const TRIP_DATA = {
+ "days": [
+  {
+   "id": "d1",
+   "label": "3/6 六",
+   "title": "抵達・青森市區",
+   "ord": 1
+  },
+  {
+   "id": "d2",
+   "label": "3/7 日",
+   "title": "縣立美術館＋淺蟲水族館",
+   "ord": 2
+  },
+  {
+   "id": "d3",
+   "label": "3/8 一",
+   "title": "青森 → 奧入瀨",
+   "ord": 3
+  },
+  {
+   "id": "d4",
+   "label": "3/9 二",
+   "title": "奧入瀨整天",
+   "ord": 4
+  },
+  {
+   "id": "d5",
+   "label": "3/10 三",
+   "title": "奧入瀨 → 弘前",
+   "ord": 5
+  },
+  {
+   "id": "d6",
+   "label": "3/11 四",
+   "title": "弘前 → 返台",
+   "ord": 6
+  }
+ ],
+ "items": [
+  {
+   "id": "d1-0",
+   "day": "d1",
+   "ord": 1,
+   "t": "14:20",
+   "title": "抵達青森機場（BR122）",
+   "note": "機場巴士到青森站約 35 分",
+   "must": 0
+  },
+  {
+   "id": "d1-1",
+   "day": "d1",
+   "ord": 2,
+   "t": "傍晚",
+   "title": "入住 ReLabo",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d1-2",
+   "day": "d1",
+   "ord": 3,
+   "t": "",
+   "title": "A-Factory、睡魔之家 Wa Rasse",
+   "note": "都在青森站旁，蘋果酒和睡魔燈籠",
+   "must": 0
+  },
+  {
+   "id": "d1-3",
+   "day": "d1",
+   "ord": 4,
+   "t": "晚上",
+   "title": "海鮮晚餐",
+   "note": "扇貝料理",
+   "must": 0
+  },
+  {
+   "id": "d2-0",
+   "day": "d2",
+   "ord": 1,
+   "t": "07:30",
+   "title": "古川市場「のっけ丼」",
+   "note": "青森魚菜中心，7:00 開門，飯賣完就提早結束；週二公休",
+   "must": 0
+  },
+  {
+   "id": "d2-1",
+   "day": "d2",
+   "ord": 2,
+   "t": "09:00",
+   "title": "搭巴士去美術館",
+   "note": "青森站前 6 號站牌，市營巴士「三内丸山遺跡行き」到「県立美術館前」，約 30 分",
+   "must": 0
+  },
+  {
+   "id": "d2-2",
+   "day": "d2",
+   "ord": 3,
+   "t": "09:30–11:30",
+   "title": "青森縣立美術館",
+   "note": "奈良美智「あおもり犬」、夏卡爾〈阿列哥〉四幅全展、志賀理江子特展（展到 3/14）。第 2、4 個週一休館",
+   "must": 1
+  },
+  {
+   "id": "d2-3",
+   "day": "d2",
+   "ord": 4,
+   "t": "約 11:45",
+   "title": "回青森站 → 青い森鐵道到淺蟲溫泉站",
+   "note": "鐵道約 20 分",
+   "must": 0
+  },
+  {
+   "id": "d2-4",
+   "day": "d2",
+   "ord": 5,
+   "t": "13:00–15:00",
+   "title": "淺蟲水族館",
+   "note": "9:00–17:00，¥1,200。海底隧道水槽、配津輕三味線的海豚表演（先查場次）",
+   "must": 1
+  },
+  {
+   "id": "d2-5",
+   "day": "d2",
+   "ord": 6,
+   "t": "15:30",
+   "title": "「ゆ〜さ淺蟲」展望浴場",
+   "note": "看陸奧灣泡湯，¥360",
+   "must": 0
+  },
+  {
+   "id": "d2-6",
+   "day": "d2",
+   "ord": 7,
+   "t": "傍晚",
+   "title": "回青森市區",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d3-0",
+   "day": "d3",
+   "ord": 1,
+   "t": "上午",
+   "title": "廣田神社",
+   "note": "青森站走路約 15 分，以消災、去病聞名，有御朱印",
+   "must": 1
+  },
+  {
+   "id": "d3-1",
+   "day": "d3",
+   "ord": 2,
+   "t": "",
+   "title": "善知鳥神社",
+   "note": "青森市發祥地，順路",
+   "must": 0
+  },
+  {
+   "id": "d3-2",
+   "day": "d3",
+   "ord": 3,
+   "t": "",
+   "title": "青森站周邊買伴手禮",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d3-3",
+   "day": "d3",
+   "ord": 4,
+   "t": "下午",
+   "title": "搭星野接駁車到奧入瀨",
+   "note": "約 2 小時，須預約",
+   "must": 0
+  },
+  {
+   "id": "d3-4",
+   "day": "d3",
+   "ord": 5,
+   "t": "晚上",
+   "title": "泡溫泉、飯店冬季活動",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d4-0",
+   "day": "d4",
+   "ord": 1,
+   "t": "09:20–11:30",
+   "title": "春雪山毛櫸林雪地鞋漫步",
+   "note": "¥4,950，含裝備租借；7 歲以上、每團 8 人、日語導覽。看不到樹冰",
+   "must": 1
+  },
+  {
+   "id": "d4-1",
+   "day": "d4",
+   "ord": 2,
+   "t": "中午",
+   "title": "回飯店吃飯、休息",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d4-2",
+   "day": "d4",
+   "ord": 3,
+   "t": "14:00",
+   "title": "奧入瀨溪流巴士觀光",
+   "note": "約 50 分，馬門岩、石戶之瀨看冰柱。另有 12:50 場",
+   "must": 1
+  },
+  {
+   "id": "d4-3",
+   "day": "d4",
+   "ord": 4,
+   "t": "",
+   "title": "泡溫泉",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d5-0",
+   "day": "d5",
+   "ord": 1,
+   "t": "早上",
+   "title": "泡溫泉、吃早餐",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d5-1",
+   "day": "d5",
+   "ord": 2,
+   "t": "",
+   "title": "接駁車回青森站 → JR 到弘前",
+   "note": "JR 奧羽本線約 40 分",
+   "must": 0
+  },
+  {
+   "id": "d5-2",
+   "day": "d5",
+   "ord": 3,
+   "t": "下午",
+   "title": "弘前城、藤田紀念庭園",
+   "note": "雪中城郭，洋館咖啡和蘋果派",
+   "must": 0
+  },
+  {
+   "id": "d5-3",
+   "day": "d5",
+   "ord": 4,
+   "t": "晚上",
+   "title": "津輕三味線現場演奏餐廳",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d6-0",
+   "day": "d6",
+   "ord": 1,
+   "t": "上午",
+   "title": "退房、弘前站附近早餐散步",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d6-1",
+   "day": "d6",
+   "ord": 2,
+   "t": "11:20",
+   "title": "弘前巴士總站搭機場巴士 → 12:15 到青森機場",
+   "note": "11:21 弘前站前也停。IC ¥1,600，不收現金。備用：12:15 發、13:10 到",
+   "must": 1
+  },
+  {
+   "id": "d6-2",
+   "day": "d6",
+   "ord": 3,
+   "t": "",
+   "title": "機場午餐、買伴手禮",
+   "note": "",
+   "must": 0
+  },
+  {
+   "id": "d6-3",
+   "day": "d6",
+   "ord": 4,
+   "t": "15:30",
+   "title": "搭 BR121 返台",
+   "note": "",
+   "must": 0
+  }
+ ],
+ "stays": [
+  {
+   "id": "s1",
+   "ord": 1,
+   "dates": "3/6、3/7",
+   "name": "ReLabo Medical Spa & Stay",
+   "status": "已選定",
+   "note": "與青森站相連，有大浴場"
+  },
+  {
+   "id": "s2",
+   "ord": 2,
+   "dates": "3/8、3/9",
+   "name": "星野 奧入瀨溪流飯店",
+   "status": "已選定",
+   "note": "青森站接駁車，約 2 小時"
+  },
+  {
+   "id": "s3",
+   "ord": 3,
+   "dates": "3/10",
+   "name": "弘前（首推 Hotel Route-Inn 弘前駅前）",
+   "status": "比較中",
+   "note": "預算每人約 NT$3,000"
+  }
+ ],
+ "todos": [
+  {
+   "id": "t1",
+   "ord": 1,
+   "done": false,
+   "text": "向星野確認 3 月有沒有八甲田樹冰團"
+  },
+  {
+   "id": "t2",
+   "ord": 2,
+   "done": false,
+   "text": "訂機票"
+  },
+  {
+   "id": "t3",
+   "ord": 3,
+   "done": false,
+   "text": "訂 ReLabo 2 晚"
+  },
+  {
+   "id": "t4",
+   "ord": 4,
+   "done": false,
+   "text": "訂星野 2 晚"
+  },
+  {
+   "id": "t5",
+   "ord": 5,
+   "done": false,
+   "text": "預訂弘前飯店"
+  },
+  {
+   "id": "t6",
+   "ord": 6,
+   "done": false,
+   "text": "預約星野接駁車"
+  },
+  {
+   "id": "t7",
+   "ord": 7,
+   "done": false,
+   "text": "報名雪地鞋漫步和溪流巴士觀光"
+  },
+  {
+   "id": "t8",
+   "ord": 8,
+   "done": false,
+   "text": "每人準備 IC 卡"
+  },
+  {
+   "id": "t9",
+   "ord": 9,
+   "done": false,
+   "text": "確認弘前機場巴士時刻"
+  }
+ ],
+ "ideas": [
+  {
+   "id": "i1",
+   "ord": 1,
+   "text": "樹冰方案 A：住星野時跟飯店樹冰團去（要等飯店公布）"
+  },
+  {
+   "id": "i2",
+   "ord": 2,
+   "text": "樹冰方案 B：3/7 從青森站搭 JR 巴士去八甲田纜車＋酸湯溫泉"
+  }
+ ]
+};
+// ===== 行程資料結束 =====
+</script>
+<script>
+(function(){
+  if (matchMedia('(hover: none)').matches) document.documentElement.classList.add('touch');
+
+  // countdown
+  (function(){
+    const el = document.getElementById('countdown');
+    const dep = new Date('2027-03-06T09:55:00+08:00');
+    const days = Math.ceil((dep - new Date()) / 86400000);
+    el.textContent = days > 0 ? '距離出發還有 ' + days + ' 天' : (days > -6 ? '旅途中，玩得開心！' : '旅程已結束');
+  })();
+
+  const S = { days: [], items: [], todos: [], ideas: [], stays: [] };
+  const loaded = {};
+  let db = null, canWrite = true;
+  const editing = { id: null, newDay: null, confirm: null };
+
+  const $ = (s, r=document) => r.querySelector(s);
+  function h(tag, attrs, ...kids){
+    const e = document.createElement(tag);
+    if (attrs) for (const k in attrs){
+      const v = attrs[k];
+      if (k === 'class') e.className = v;
+      else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+      else if (v !== null && v !== undefined && v !== false) e.setAttribute(k, v === true ? '' : v);
+    }
+    for (const k of kids.flat()) if (k !== null && k !== undefined && k !== false) e.append(k.nodeType ? k : String(k));
+    return e;
+  }
+  const byOrd = (a,b) => (a.ord ?? 0) - (b.ord ?? 0) || String(a.id).localeCompare(String(b.id));
+  const maxOrd = arr => arr.reduce((m,x)=>Math.max(m, x.ord ?? 0), 0);
+
+  function setStatus(msg){ $('#status').textContent = msg || ''; }
+  function fail(e){
+    console.error(e);
+    if (e && e.code === 'invalid_argument' && !canWrite) return;
+    if (e && e.code === 'invalid_argument') { canWrite = false; document.body.classList.add('ro'); setBanner('你目前只能瀏覽，不能修改。請請建立者把你的權限設成「Contributor」或以上。'); return; }
+    if (e && e.code === 'quota_exceeded') { setBanner('資料已經存滿了，請先刪掉一些項目。'); return; }
+    setBanner('剛剛的修改沒有存成功，請再試一次。');
+  }
+  function setBanner(t){ const b=$('#banner'); b.textContent=''; if(t) b.append(h('div',{class:'banner'},t)); }
+
+  async function write(fn){ try { await fn(); } catch(e){ fail(e); } }
+
+  // ---------- render ----------
+  function render(){
+    renderNav(); renderStays(); renderDays(); renderList('todos'); renderList('ideas');
+    const n = S.todos.length, d = S.todos.filter(t=>t.done).length;
+    $('#todoCount').textContent = n ? d + ' / ' + n + ' 完成' : '';
+  }
+
+  function renderNav(){
+    const nav = $('#daynav'); nav.textContent='';
+    nav.append(h('a',{href:'#overview'},'航班與住宿'));
+    for (const d of [...S.days].sort(byOrd)) nav.append(h('a',{href:'#day-'+d.id}, d.label));
+    nav.append(h('a',{href:'#ideas-sec'},'備選'), h('a',{href:'#todo-sec'},'待辦'));
+  }
+
+  function statusPill(s){
+    const cls = /已|訂好|完成/.test(s||'') ? 'pill done' : /中|待|還沒/.test(s||'') ? 'pill wait' : 'pill';
+    return h('span',{class:cls}, s || '—');
+  }
+
+  function renderStays(){
+    const tb = $('#stays'); tb.textContent='';
+    const list = [...S.stays].sort(byOrd);
+    for (const s of list){
+      if (editing.id === 'stays/'+s.id){
+        tb.append(h('tr',null,h('td',{colspan:4}, stayForm(s))));
+        continue;
+      }
+      tb.append(h('tr',{class:'li-row'},
+        h('td',null,s.dates||''),
+        h('td',null,h('div',{style:'font-weight:500'},s.name||''), s.note? h('div',{style:'color:var(--muted);font-size:13px;white-space:pre-wrap'},s.note):null),
+        h('td',null,statusPill(s.status)),
+        h('td',null,h('div',{class:'tools',style:'opacity:1'},
+          h('button',{class:'ib',title:'編輯',onclick:()=>{editing.id='stays/'+s.id;render();}},'✎'),
+          h('button',{class:'ib del',title:'刪除',onclick:()=>{editing.confirm='stays/'+s.id;render();}},'✕')),
+          editing.confirm==='stays/'+s.id ? confirmBox(()=>write(()=>db.doc('stays/'+s.id).delete())) : null)
+      ));
+    }
+    if (editing.id === 'stays/new') tb.append(h('tr',null,h('td',{colspan:4}, stayForm(null))));
+  }
+
+  function stayForm(s){
+    const f = h('form',{class:'edit'},
+      h('div',{class:'r'},
+        h('input',{class:'tm',name:'dates',placeholder:'日期，例 3/10',value:s?.dates||'',maxlength:40}),
+        h('input',{class:'tt',name:'name',placeholder:'飯店名稱',value:s?.name||'',maxlength:120,required:true}),
+        h('input',{class:'tm',name:'status',placeholder:'狀態',value:s?.status||'',maxlength:20})),
+      h('textarea',{name:'note',placeholder:'備註（地址、房型、確認事項…）',maxlength:1000}, s?.note||''),
+      h('div',{class:'btns'},
+        h('button',{type:'button',class:'btn ghost',onclick:()=>{editing.id=null;render();}},'取消'),
+        h('button',{class:'btn primary'},'儲存')));
+    f.addEventListener('submit', e=>{
+      e.preventDefault();
+      const v = {dates:f.dates.value.trim(), name:f.name.value.trim(), status:f.status.value.trim(), note:f.note.value.trim()};
+      editing.id=null; render();
+      if (s) write(()=>db.doc('stays/'+s.id).update(v));
+      else write(()=>db.collection('stays').add({...v, ord:maxOrd(S.stays)+1}));
+    });
+    setTimeout(()=>f.name.focus(),0);
+    return f;
+  }
+
+  function confirmBox(onYes){
+    return h('div',{class:'confirm'},'確定要刪除？',
+      h('button',{class:'btn danger',type:'button',onclick:()=>{editing.confirm=null;render();onYes();}},'刪除'),
+      h('button',{class:'btn ghost',type:'button',onclick:()=>{editing.confirm=null;render();}},'取消'));
+  }
+
+  function renderDays(){
+    const box = $('#days'); box.textContent='';
+    for (const d of [...S.days].sort(byOrd)){
+      const items = S.items.filter(i=>i.day===d.id).sort(byOrd);
+      const ul = h('ol',{class:'stops'});
+      items.forEach((it, idx)=>{
+        if (editing.id === 'items/'+it.id){ ul.append(h('li',{class:'stop'}, itemForm(d.id,it))); return; }
+        ul.append(h('li',{class:'stop'+(it.must?' must':'')},
+          h('div',{class:'row'},
+            h('div',{class:'t'}, it.t||''),
+            h('div',{class:'body'},
+              h('div',{class:'ttl'}, it.title||'', it.must? h('span',{class:'must'},'必去'):null),
+              it.note ? h('div',{class:'note'}, it.note) : null,
+              editing.confirm==='items/'+it.id ? confirmBox(()=>write(()=>db.doc('items/'+it.id).delete())) : null),
+            h('div',{class:'tools'},
+              h('button',{class:'ib',title:'往上',disabled:idx===0,onclick:()=>swap(items[idx],items[idx-1])},'↑'),
+              h('button',{class:'ib',title:'往下',disabled:idx===items.length-1,onclick:()=>swap(items[idx],items[idx+1])},'↓'),
+              h('button',{class:'ib',title:'編輯',onclick:()=>{editing.id='items/'+it.id;editing.confirm=null;render();}},'✎'),
+              h('button',{class:'ib del',title:'刪除',onclick:()=>{editing.confirm='items/'+it.id;render();}},'✕')))
+        ));
+      });
+      if (editing.newDay === d.id) ul.append(h('li',{class:'stop'}, itemForm(d.id,null)));
+      box.append(h('section',{class:'day',id:'day-'+d.id},
+        h('div',{class:'day-head'}, h('span',{class:'date'}, d.label), h('span',{class:'title'}, d.title||'')),
+        h('div',{class:'card'}, ul,
+          editing.newDay === d.id ? null : h('button',{class:'add',onclick:()=>{editing.newDay=d.id;editing.id=null;render();}},'＋ 新增行程'))
+      ));
+    }
+  }
+
+  function swap(a,b){
+    if(!a||!b) return;
+    let ao=a.ord??0, bo=b.ord??0;
+    if (ao===bo){ bo = ao + (S.items.indexOf(b) > S.items.indexOf(a) ? 1 : -1); }
+    write(async()=>{ await db.doc('items/'+a.id).update({ord:bo}); await db.doc('items/'+b.id).update({ord:ao}); });
+  }
+
+  function itemForm(day, it){
+    const f = h('form',{class:'edit'},
+      h('div',{class:'r'},
+        h('input',{class:'tm',name:'t',placeholder:'時間',value:it?.t||'',maxlength:30}),
+        h('input',{class:'tt',name:'title',placeholder:'要做什麼／去哪裡',value:it?.title||'',maxlength:120,required:true})),
+      h('textarea',{name:'note',placeholder:'備註（交通、費用、注意事項…）',maxlength:2000}, it?.note||''),
+      h('div',{class:'btns'},
+        h('label',{class:'chk',style:'margin-right:auto'}, h('input',{type:'checkbox',name:'must',checked:!!it?.must}),'標為必去'),
+        h('button',{type:'button',class:'btn ghost',onclick:()=>{editing.id=null;editing.newDay=null;render();}},'取消'),
+        h('button',{class:'btn primary'},'儲存')));
+    f.addEventListener('submit', e=>{
+      e.preventDefault();
+      const v = {t:f.t.value.trim(), title:f.title.value.trim(), note:f.note.value.trim(), must:f.must.checked};
+      editing.id=null; editing.newDay=null; render();
+      if (it) write(()=>db.doc('items/'+it.id).update(v));
+      else write(()=>db.collection('items').add({...v, day, ord:maxOrd(S.items.filter(i=>i.day===day))+1}));
+    });
+    setTimeout(()=>f.title.focus(),0);
+    return f;
+  }
+
+  function renderList(name){
+    const ul = $('#'+name); ul.textContent='';
+    const list = [...S[name]].sort(byOrd);
+    if (!list.length && loaded[name]) ul.append(h('li',{class:'li',style:'color:var(--muted)'},'目前沒有項目'));
+    for (const x of list){
+      const key = name+'/'+x.id;
+      if (editing.id === key){
+        const f = h('form',{class:'edit',style:'width:100%'},
+          h('textarea',{name:'text',maxlength:400}, x.text||''),
+          h('div',{class:'btns'},
+            h('button',{type:'button',class:'btn ghost',onclick:()=>{editing.id=null;render();}},'取消'),
+            h('button',{class:'btn primary'},'儲存')));
+        f.addEventListener('submit',e=>{e.preventDefault(); const t=f.text.value.trim(); editing.id=null; render(); if(t && t!==x.text) write(()=>db.doc(key).update({text:t}));});
+        ul.append(h('li',{class:'li'},f)); setTimeout(()=>f.text.focus(),0); continue;
+      }
+      ul.append(h('li',{class:'li'+(x.done?' done':'')},
+        name==='todos' ? h('input',{type:'checkbox',checked:!!x.done,disabled:!canWrite||!db,onchange:(e)=>write(()=>db.doc(key).update({done:e.target.checked}))}) : h('span',{style:'color:var(--muted)'},'•'),
+        h('div',{class:'txt'}, x.text||'',
+          editing.confirm===key ? confirmBox(()=>write(()=>db.doc(key).delete())) : null),
+        h('div',{class:'tools'},
+          h('button',{class:'ib',title:'編輯',onclick:()=>{editing.id=key;render();}},'✎'),
+          h('button',{class:'ib del',title:'刪除',onclick:()=>{editing.confirm=key;render();}},'✕'))));
+    }
+  }
+
+  document.querySelectorAll('form[data-add]').forEach(f=>{
+    f.addEventListener('submit', e=>{
+      e.preventDefault();
+      const name = f.dataset.add, inp = $('input',f), t = inp.value.trim();
+      if (!t || !db) return;
+      inp.value='';
+      const data = {text:t, ord:maxOrd(S[name])+1};
+      if (name==='todos') data.done=false;
+      write(()=>db.collection(name).add(data));
+    });
+  });
+  $('#addStay').addEventListener('click',()=>{editing.id='stays/new';render();});
+
+  // ---------- data ----------
+  async function start(){
+    if (!window.claude || !window.claude.use){ useStatic(); return; }
+    db = await window.claude.use('db');
+    if (!db){ useStatic(); return; }
+    try {
+      const user = await window.claude.use('user');
+      const c = user && user.can ? await user.can('data.write') : null;
+      if (c === false){ canWrite=false; document.body.classList.add('ro'); setBanner('你目前只能瀏覽。若要一起編輯，請建立者在分享設定把你設為「Contributor」或以上。'); }
+    } catch(e){}
+
+    const timer = setTimeout(()=>{ if(!loaded.items) setStatus('資料還沒載入，網路可能不穩，請稍候。'); }, 10000);
+    for (const name of ['days','items','todos','ideas','stays']){
+      db.collection(name).onSnapshot(snap=>{
+        S[name] = snap.docs.map(d=>({id:d.id, ...d.data()}));
+        if (!snap.metadata.fromCache) loaded[name]=true;
+        if (name==='items' && !snap.metadata.fromCache){ clearTimeout(timer); }
+        const all = loaded.days && loaded.items;
+        setStatus(all ? (S.days.length ? '' : '行程還是空的。') : '載入中…');
+        render();
+      }, err=>{ clearTimeout(timer); console.error(err); setStatus('共享資料連線中斷，請重新整理頁面。'); });
+    }
+  }
+  function useStatic(){
+    canWrite=false; document.body.classList.add('ro');
+    for (const k of ['days','items','todos','ideas','stays']){ S[k]=TRIP_DATA[k]||[]; loaded[k]=true; }
+    setStatus(''); render();
+  }
+  render();
+  start();
+})();
+</script>
+</body>
+</html>
