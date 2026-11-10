@@ -482,42 +482,51 @@ const TRIP_DATA = {
    "id": "d2-0",
    "day": "d2",
    "ord": 1,
-   "t": "上午～中午",
-   "title": "弘前城、弘前公園、藤田紀念庭園",
-   "note": "雪中城郭，洋館咖啡和蘋果派，在弘前吃午餐",
+   "t": "上午",
+   "title": "弘前城、弘前公園",
+   "note": "退房、行李寄放飯店 → 弘前站搭弘南巴士約 15 分，「市役所前」下車",
    "must": false
   },
   {
    "id": "d2-1",
    "day": "d2",
    "ord": 2,
-   "t": "",
-   "title": "🛒 買兩晚的晚餐（3/7、3/8）",
-   "note": "泡麵、飯糰、點心、飲料。奧入瀨附近沒有商店，3/8 整天在飯店，要一次買齊。弘前或青森站附近買都可以",
+   "t": "約 11:00",
+   "title": "藤田紀念庭園・大正浪漫喫茶室（午餐）",
+   "note": "洋館裡的咖啡廳，9:30–16:30（16:00 最後點餐），無固定公休。蘋果派飲料套餐 ¥990；也有蕎麥可麗餅、弘前蘋果咖哩等輕食",
    "must": true
   },
   {
    "id": "d2-2",
    "day": "d2",
    "ord": 3,
-   "t": "約 13:30 前",
-   "title": "JR 奧羽本線 弘前 → 青森",
-   "note": "約 40–50 分，14:30 前到青森站",
-   "must": false
+   "t": "",
+   "title": "🛒 買兩晚的晚餐（3/7、3/8）",
+   "note": "泡麵、飯糰、點心、飲料。奧入瀨附近沒有商店，3/8 整天在飯店，要一次買齊",
+   "must": true
   },
   {
    "id": "d2-3",
    "day": "d2",
    "ord": 4,
+   "t": "約 13:30 前",
+   "title": "回飯店拿行李 → JR 弘前 → 青森",
+   "note": "約 40–50 分，14:30 前到青森站",
+   "must": false
+  },
+  {
+   "id": "d2-4",
+   "day": "d2",
+   "ord": 5,
    "t": "15:00",
    "title": "星野接駁車（青森站西口廣場出發）",
    "note": "車程約 150 分。付費、兩天前預約：12 月～3 月大人單程 ¥4,000",
    "must": true
   },
   {
-   "id": "d2-4",
+   "id": "d2-5",
    "day": "d2",
-   "ord": 5,
+   "ord": 6,
    "t": "約 17:30",
    "title": "抵達星野，房間吃自備晚餐、泡溫泉",
    "note": "有帶快煮壺",
@@ -637,7 +646,7 @@ const MAP_PLACES = [
  {day:"d1", name:"青森機場", lat:40.7347, lng:140.6908},
  {day:"d1", name:"弘前站", lat:40.5983, lng:140.4855, q:"弘前駅"},
  {day:"d2", name:"弘前城", lat:40.6077, lng:140.4642, q:"弘前城"},
- {day:"d2", name:"藤田紀念庭園", lat:40.6038, lng:140.4614, q:"藤田記念庭園"},
+ {day:"d2", name:"藤田紀念庭園・大正浪漫喫茶室", lat:40.6038, lng:140.4614, q:"大正浪漫喫茶室 弘前"},
  {day:"d2", name:"青森站", lat:40.8288, lng:140.7342, q:"青森駅"},
  {day:"d2", name:"星野 奧入瀨溪流飯店", lat:40.5885, lng:141.189, q:"奥入瀬渓流ホテル"},
  {day:"d3", name:"馬門岩", lat:40.578, lng:141.184, q:"馬門岩 奥入瀬"},
@@ -914,11 +923,11 @@ const MAP_PLACES = [
     if(!window.L){ const m=$('#map'); m.style.display='grid'; m.style.placeItems='center'; m.style.height='auto'; m.style.padding='18px'; m.textContent='地圖載入失敗，請重新整理，或直接點下面的地點開 Google 地圖。'; return; }
     if(!leafMap){
       leafMap=L.map('map',{scrollWheelZoom:false});
-      const carto=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:18,subdomains:'abcd',
-        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'}).addTo(leafMap);
+      const osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(leafMap);
       let errs=0, switched=false;
-      carto.on('tileerror',()=>{ if(++errs>=3 && !switched){ switched=true; leafMap.removeLayer(carto);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(leafMap); } });
+      osm.on('tileerror',()=>{ if(++errs>=3 && !switched){ switched=true; leafMap.removeLayer(osm);
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles &copy; Esri'}).addTo(leafMap); } });
       const fix=()=>{ try{ leafMap.invalidateSize(); if(lastBounds) fitTo(lastBounds); }catch(e){} };
       setTimeout(fix,300); setTimeout(fix,1200);
       window.addEventListener('load',fix); window.addEventListener('resize',fix);
