@@ -119,6 +119,12 @@
   .maplist a{display:block;padding:3px 0;text-decoration:none}
   .maplist a i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
   .mapnote{font-size:12px;color:var(--muted);margin-top:6px}
+
+  .tt{width:100%;border-collapse:collapse;margin:6px 0 14px}
+  .tt th,.tt td{padding:7px 8px;border-bottom:1px solid var(--line);font-size:14px;text-align:left}
+  .tt tr.pick td{background:#e7f1fb;font-weight:700}
+  .tt-h{font-weight:700;margin:14px 0 2px}
+  .tt-note{font-size:13px;color:var(--muted);margin:0 0 4px}
   .ro .tools,.ro .add,.ro .addrow{display:none!important}
 </style>
 </head>
@@ -161,7 +167,7 @@
     <h2>地圖 <span class="tag">點地點可開 Google 地圖</span></h2>
     <div class="chips" id="mapchips"></div>
     <div id="map"></div>
-    <div class="mapnote">圖釘位置是大概位置；要導航請點地點裡的「Google 地圖」。</div>
+    <div class="mapnote">圖釘位置依地址標示（奧入瀨的飯店和景點是大概位置）；要導航請點地點裡的「Google 地圖」。</div>
     <div class="maplist" id="maplist"></div>
   </section>
   <section>
@@ -175,6 +181,35 @@
 
   <div id="days"></div>
 
+
+  <section id="tt-sec">
+    <h2>交通時刻表 <span class="tag">參考</span></h2>
+    <div class="card">
+      <p class="tt-note">⚠️ 以下是 2026 年 10～11 月的時刻。機場巴士大約每 2 個月配合航班改一次時刻，3 月的版本要到 2 月左右才會公布，出發前一定要再查一次。藍底是建議搭的班次。</p>
+      <div class="tt-h">3/6 青森機場 → 弘前站前（弘南巴士，約 54 分）</div>
+      <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>14:00</td><td>14:54</td><td>14:20 才落地，趕不上</td></tr><tr class="pick"><td>15:15</td><td>16:09</td><td>目標班次，落地後約 55 分鐘可以入境、領行李</td></tr><tr><td>16:25</td><td>17:19</td><td>備用</td></tr><tr><td>17:40</td><td>18:34</td><td>備用</td></tr></tbody></table>
+      <p class="tt-note">不收現金，只能用交通系 IC 卡或感應式信用卡；前門上車、下車時付款。</p>
+      <div class="tt-h">3/7 JR 弘前 → 青森（奧羽本線，約 40–50 分）</div>
+      <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>11:39</td><td>12:27</td><td>普通車</td></tr><tr class="pick"><td>12:24</td><td>13:12</td><td>推薦，到青森還有時間買東西</td></tr><tr><td>13:06</td><td>約 13:50</td><td>也來得及</td></tr><tr><td>13:45</td><td>約 14:30</td><td>最後一班，沒什麼餘裕，不建議</td></tr></tbody></table>
+      <p class="tt-note">要趕 15:00 的星野接駁車（青森站西口廣場）。12:54 的快速リゾートしらかみ只有特定日行駛。</p>
+      <div class="tt-h">3/11 青森站 → 青森機場（JR 巴士，11 號站牌，約 35 分）</div>
+      <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>11:00</td><td>11:35</td><td>早一點，可以在機場吃午餐</td></tr><tr class="pick"><td>11:45</td><td>12:20</td><td>推薦，離起飛 3 小時 10 分</td></tr><tr><td>12:30</td><td>13:05</td><td>也可以</td></tr><tr><td>12:40</td><td>13:15</td><td>最晚建議搭這班</td></tr><tr><td>13:40</td><td>14:15</td><td>太趕，不建議</td></tr></tbody></table>
+      <p class="tt-note">搭 15:30 的 BR121。</p>
+
+      <div class="tt-h">3/9 青森市區（都用走的）</div>
+      <p class="tt-note">青森站 → 廣田神社 走路約 15 分（青森地方法院對面）；青森站 → 善知鳥神社 走路約 10 分；A-Factory、睡魔之家 Wa Rasse 都在青森站旁邊。</p>
+      <div class="tt-h">3/10 青森站前（6 號站牌）→ 縣立美術館前（市營巴士 S51，約 22 分，約 ¥280）</div>
+      <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>08:07</td><td>08:29</td><td></td></tr><tr class="pick"><td>08:47</td><td>09:09</td><td>推薦，吃完のっけ丼後搭；開館前可先看隔壁三內丸山遺跡</td></tr><tr><td>09:55</td><td>10:17</td><td>備用</td></tr></tbody></table>
+      <p class="tt-note">後門上車、下車時付款，可以用交通系 IC 卡。</p>
+      <div class="tt-h">3/10 縣立美術館前 → 青森站前（A1 國道・古川線，約 23 分）</div>
+      <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>10:46</td><td>11:08</td><td>想早點去淺蟲就搭這班，接 12:00 的鐵道</td></tr><tr class="pick"><td>11:46</td><td>12:09</td><td>推薦，回車站附近吃午餐</td></tr><tr><td>13:25</td><td>13:48</td><td>太晚，淺蟲的時間會不夠</td></tr></tbody></table>
+      <div class="tt-h">3/10 青森 → 淺蟲溫泉（青い森鐵道，約 20 分，¥540）</div>
+      <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>12:00</td><td>約 12:20</td><td>搭 10:46 那班巴士的話</td></tr><tr class="pick"><td>13:18</td><td>約 13:38</td><td>推薦，下車走路約 10 分到水族館</td></tr><tr><td>14:39</td><td>14:59</td><td>快速，備用</td></tr></tbody></table>
+      <div class="tt-h">3/10 淺蟲溫泉 → 青森（青い森鐵道，約 25 分）</div>
+      <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>15:45</td><td>16:10</td><td></td></tr><tr class="pick"><td>16:42</td><td>17:07</td><td>推薦，泡完展望浴場剛好</td></tr><tr><td>17:35</td><td>18:00</td><td>備用</td></tr><tr><td>18:34</td><td>約 18:59</td><td>備用</td></tr></tbody></table>
+      <p class="tt-note">鐵道時刻是平日版本（3/10 是週三）。青い森鐵道每年 3 月中會改點，出發前再確認。</p>
+    </div>
+  </section>
   <section id="ideas-sec">
     <h2>備選與想法</h2>
     <div class="card"><ul class="list" id="ideas"></ul>
@@ -266,9 +301,9 @@ const TRIP_DATA = {
    "id": "d1-1",
    "day": "d1",
    "ord": 2,
-   "t": "15:05 / 16:15",
-   "title": "搭弘南巴士直達弘前",
-   "note": "約 55 分，IC ¥1,600，不收現金。入境順利搭 15:05，來不及搭 16:15（約 17:10 到）",
+   "t": "15:15",
+   "title": "搭弘南巴士到弘前站前（16:09 到）",
+   "note": "約 54 分，IC 約 ¥1,600，不收現金。備用：16:25 發、17:19 到",
    "must": true
   },
   {
@@ -326,69 +361,6 @@ const TRIP_DATA = {
    "must": false
   },
   {
-   "id": "d5-0",
-   "day": "d5",
-   "ord": 1,
-   "t": "07:30",
-   "title": "古川市場「のっけ丼」",
-   "note": "青森魚菜中心，7:00 開門，飯賣完就提早結束",
-   "must": false
-  },
-  {
-   "id": "d5-1",
-   "day": "d5",
-   "ord": 2,
-   "t": "09:00",
-   "title": "搭巴士去美術館",
-   "note": "青森站前 6 號站牌，市營巴士「三内丸山遺跡行き」到「県立美術館前」，約 30 分",
-   "must": false
-  },
-  {
-   "id": "d5-2",
-   "day": "d5",
-   "ord": 3,
-   "t": "09:30–11:30",
-   "title": "青森縣立美術館",
-   "note": "奈良美智「あおもり犬」、夏卡爾〈阿列哥〉四幅全展、志賀理江子特展（展到 3/14）",
-   "must": true
-  },
-  {
-   "id": "d5-3",
-   "day": "d5",
-   "ord": 4,
-   "t": "約 11:45",
-   "title": "回青森站 → 青い森鐵道到淺蟲溫泉站",
-   "note": "鐵道約 20 分",
-   "must": false
-  },
-  {
-   "id": "d5-4",
-   "day": "d5",
-   "ord": 5,
-   "t": "13:00–15:00",
-   "title": "淺蟲水族館",
-   "note": "9:00–17:00，¥1,200。海底隧道水槽、配津輕三味線的海豚表演（先查場次）",
-   "must": true
-  },
-  {
-   "id": "d5-5",
-   "day": "d5",
-   "ord": 6,
-   "t": "15:30",
-   "title": "「ゆ〜さ淺蟲」展望浴場",
-   "note": "看陸奧灣泡湯，¥360",
-   "must": false
-  },
-  {
-   "id": "d5-6",
-   "day": "d5",
-   "ord": 7,
-   "t": "傍晚",
-   "title": "回青森市區",
-   "note": "",
-   "must": false
-  },
-  {
    "id": "d6-0",
    "day": "d6",
    "ord": 1,
@@ -401,9 +373,9 @@ const TRIP_DATA = {
    "id": "d6-1",
    "day": "d6",
    "ord": 2,
-   "t": "中午",
-   "title": "青森站搭 JR 巴士青森空港線",
-   "note": "約 35 分、約 ¥740；建議 12:30–13:00 前到機場，出發前查時刻",
+   "t": "11:45",
+   "title": "青森站 11 號站牌搭 JR 巴士 → 12:20 到機場",
+   "note": "約 35 分。備用：12:30 發、13:05 到；最晚 12:40 發",
    "must": true
   },
   {
@@ -509,9 +481,9 @@ const TRIP_DATA = {
    "id": "d2-3",
    "day": "d2",
    "ord": 4,
-   "t": "約 13:30 前",
-   "title": "回飯店拿行李 → JR 弘前 → 青森",
-   "note": "約 40–50 分，14:30 前到青森站",
+   "t": "12:24",
+   "title": "回飯店拿行李 → JR 弘前 12:24 → 青森 13:12",
+   "note": "備用：13:06 發，約 13:50 到",
    "must": false
   },
   {
@@ -530,6 +502,78 @@ const TRIP_DATA = {
    "t": "約 17:30",
    "title": "抵達星野，房間吃自備晚餐、泡溫泉",
    "note": "有帶快煮壺",
+   "must": false
+  },
+  {
+   "id": "d5-0",
+   "day": "d5",
+   "ord": 1,
+   "t": "07:30",
+   "title": "古川市場「のっけ丼」",
+   "note": "青森魚菜中心，7:00 開門，飯賣完就提早結束",
+   "must": false
+  },
+  {
+   "id": "d5-1",
+   "day": "d5",
+   "ord": 2,
+   "t": "08:47",
+   "title": "青森站前 6 號站牌搭市營巴士 S51 → 09:09 縣立美術館前",
+   "note": "約 22 分、約 ¥280，可用 IC 卡。開館前可先看隔壁三內丸山遺跡",
+   "must": false
+  },
+  {
+   "id": "d5-2",
+   "day": "d5",
+   "ord": 3,
+   "t": "09:30–11:40",
+   "title": "青森縣立美術館",
+   "note": "奈良美智「あおもり犬」、夏卡爾〈阿列哥〉四幅全展、志賀理江子特展（展到 3/14）",
+   "must": true
+  },
+  {
+   "id": "d5-3",
+   "day": "d5",
+   "ord": 4,
+   "t": "11:46",
+   "title": "A1 巴士回青森站（12:09 到），車站附近吃午餐",
+   "note": "",
+   "must": false
+  },
+  {
+   "id": "d5-4",
+   "day": "d5",
+   "ord": 5,
+   "t": "13:18",
+   "title": "青い森鐵道 青森 → 淺蟲溫泉（約 13:38 到）",
+   "note": "¥540，下車走路約 10 分到水族館",
+   "must": false
+  },
+  {
+   "id": "d5-5",
+   "day": "d5",
+   "ord": 6,
+   "t": "約 13:50–15:30",
+   "title": "淺蟲水族館",
+   "note": "9:00–17:00，¥1,200。海底隧道水槽、配津輕三味線的海豚表演（先查場次）",
+   "must": true
+  },
+  {
+   "id": "d5-6",
+   "day": "d5",
+   "ord": 7,
+   "t": "15:40",
+   "title": "「ゆ〜さ淺蟲」展望浴場",
+   "note": "看陸奧灣泡湯，¥360，淺蟲溫泉站走路 1 分",
+   "must": false
+  },
+  {
+   "id": "d5-7",
+   "day": "d5",
+   "ord": 8,
+   "t": "16:42",
+   "title": "青い森鐵道 淺蟲溫泉 → 青森（17:07 到）",
+   "note": "備用：17:35 發、18:00 到",
    "must": false
   }
  ],
@@ -643,27 +687,28 @@ const TRIP_DATA = {
 // ===== 行程資料結束 =====
 // ===== 地圖地點：day 對應上面的 d1–d6，"idea" 是備選 =====
 const MAP_PLACES = [
- {day:"d1", name:"青森機場", lat:40.7347, lng:140.6908},
- {day:"d1", name:"弘前站", lat:40.5983, lng:140.4855, q:"弘前駅"},
- {day:"d2", name:"弘前城", lat:40.6077, lng:140.4642, q:"弘前城"},
- {day:"d2", name:"藤田紀念庭園・大正浪漫喫茶室", lat:40.6038, lng:140.4614, q:"大正浪漫喫茶室 弘前"},
- {day:"d2", name:"青森站", lat:40.8288, lng:140.7342, q:"青森駅"},
- {day:"d2", name:"星野 奧入瀨溪流飯店", lat:40.5885, lng:141.189, q:"奥入瀬渓流ホテル"},
- {day:"d3", name:"馬門岩", lat:40.578, lng:141.184, q:"馬門岩 奥入瀬"},
- {day:"d3", name:"石ヶ戸の瀬", lat:40.5705, lng:141.1775, q:"石ヶ戸 奥入瀬"},
- {day:"d4", name:"ReLabo（青森站）", lat:40.8288, lng:140.7342, q:"ReLabo Medical Spa & Stay 青森"},
- {day:"d4", name:"廣田神社", lat:40.8215, lng:140.7468, q:"廣田神社 青森市"},
- {day:"d4", name:"善知鳥神社", lat:40.8262, lng:140.7446, q:"善知鳥神社"},
- {day:"d4", name:"A-Factory", lat:40.8297, lng:140.7349, q:"A-FACTORY 青森"},
- {day:"d4", name:"睡魔之家 Wa Rasse", lat:40.8283, lng:140.7364, q:"ねぶたの家 ワ・ラッセ"},
- {day:"d5", name:"古川市場（のっけ丼）", lat:40.8236, lng:140.74, q:"青森魚菜センター"},
- {day:"d5", name:"青森縣立美術館", lat:40.8118, lng:140.6868, q:"青森県立美術館"},
- {day:"d5", name:"淺蟲水族館", lat:40.8975, lng:140.8628, q:"浅虫水族館"},
- {day:"d5", name:"ゆ〜さ淺蟲", lat:40.8947, lng:140.8596, q:"道の駅 浅虫温泉 ゆ〜さ浅虫"},
- {day:"d6", name:"青森站", lat:40.8288, lng:140.7342, q:"青森駅"},
- {day:"d6", name:"青森機場", lat:40.7347, lng:140.6908},
- {day:"idea", name:"八甲田纜車（樹冰）", lat:40.6745, lng:140.8545, q:"八甲田ロープウェー"},
- {day:"idea", name:"酸湯溫泉", lat:40.6487, lng:140.8487, q:"酸ヶ湯温泉"}
+ {day:"d1", name:"青森機場", lat:40.735302, lng:140.690491, q:"青森空港"},
+ {day:"d1", name:"弘前站", lat:40.599669, lng:140.485189, q:"弘前駅"},
+ {day:"d1", name:"Art Hotel 弘前 City", lat:40.598141, lng:140.484222, q:"アートホテル弘前シティ"},
+ {day:"d2", name:"弘前城・弘前公園", lat:40.606075, lng:140.466019, q:"弘前城"},
+ {day:"d2", name:"藤田紀念庭園・大正浪漫喫茶室", lat:40.60376, lng:140.460983, q:"大正浪漫喫茶室 弘前"},
+ {day:"d2", name:"青森站（西口廣場）", lat:40.829974, lng:140.734534, q:"青森駅 西口"},
+ {day:"d2", name:"星野 奧入瀨溪流飯店", lat:40.5763, lng:140.9816, q:"奥入瀬渓流ホテル"},
+ {day:"d3", name:"馬門岩", lat:40.528872, lng:140.978928, q:"馬門岩 奥入瀬"},
+ {day:"d3", name:"石ヶ戸の瀬", lat:40.539983, lng:140.977567, q:"石ヶ戸 奥入瀬"},
+ {day:"d4", name:"ReLabo（青森站）", lat:40.828552, lng:140.734726, q:"ReLabo Medical Spa & Stay 青森"},
+ {day:"d4", name:"廣田神社", lat:40.822952, lng:140.742889, q:"廣田神社 青森市"},
+ {day:"d4", name:"善知鳥神社", lat:40.826397, lng:140.743973, q:"善知鳥神社"},
+ {day:"d4", name:"A-Factory", lat:40.832012, lng:140.735672, q:"A-FACTORY 青森"},
+ {day:"d4", name:"睡魔之家 Wa Rasse", lat:40.829403, lng:140.735291, q:"ねぶたの家 ワ・ラッセ"},
+ {day:"d5", name:"古川市場（のっけ丼）", lat:40.825939, lng:140.735687, q:"青森魚菜センター"},
+ {day:"d5", name:"青森縣立美術館", lat:40.806915, lng:140.701584, q:"青森県立美術館"},
+ {day:"d5", name:"淺蟲水族館", lat:40.897568, lng:140.862732, q:"浅虫水族館"},
+ {day:"d5", name:"ゆ〜さ淺蟲", lat:40.890911, lng:140.861526, q:"道の駅 浅虫温泉 ゆ〜さ浅虫"},
+ {day:"d6", name:"青森站（11 號站牌）", lat:40.829974, lng:140.734534, q:"青森駅"},
+ {day:"d6", name:"青森機場", lat:40.735302, lng:140.690491, q:"青森空港"},
+ {day:"idea", name:"八甲田纜車（樹冰）", lat:40.679289, lng:140.842825, q:"八甲田ロープウェー"},
+ {day:"idea", name:"酸湯溫泉", lat:40.649914, lng:140.852099, q:"酸ヶ湯温泉"}
 ];
 // ===== 地圖地點結束 =====
 
@@ -723,7 +768,7 @@ const MAP_PLACES = [
     const nav = $('#daynav'); nav.textContent='';
     nav.append(h('a',{href:'#overview'},'航班與住宿'), h('a',{href:'#map-sec'},'地圖'));
     for (const d of [...S.days].sort(byOrd)) nav.append(h('a',{href:'#day-'+d.id}, d.label));
-    nav.append(h('a',{href:'#ideas-sec'},'備選'), h('a',{href:'#todo-sec'},'待辦'));
+    nav.append(h('a',{href:'#tt-sec'},'時刻表'), h('a',{href:'#ideas-sec'},'備選'), h('a',{href:'#todo-sec'},'待辦'));
   }
 
   function statusPill(s){
