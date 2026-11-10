@@ -6,6 +6,7 @@
 <title>2027 青森之旅</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   :root{
     --ink:#1d2a36; --muted:#5f6f7e; --line:#dfe6ec; --bg:#f6f8fa; --card:#fff;
@@ -102,6 +103,22 @@
   .banner{background:#f9eeda;color:#7a5410;border-radius:10px;padding:10px 14px;font-size:14px;margin-top:18px}
   .links a{display:block;padding:6px 0;font-size:14px}
   footer{color:var(--muted);font-size:12px;text-align:center;padding:30px 0 50px}
+
+  #map{height:420px;border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;background:var(--snow)}
+  @media (max-width:620px){#map{height:340px}}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
+  .chip.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+  .chip i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
+  .pin{width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:grid;place-items:center}
+  .pin span{transform:rotate(45deg);color:#fff;font-size:12px;font-weight:700}
+  .leaflet-popup-content{font-family:"Noto Sans TC",sans-serif;font-size:13px;line-height:1.5}
+  .leaflet-popup-content b{font-size:14px}
+  .maplist{columns:2;column-gap:20px;margin-top:10px;font-size:13px}
+  @media (max-width:620px){.maplist{columns:1}}
+  .maplist a{display:block;padding:3px 0;text-decoration:none}
+  .maplist a i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+  .mapnote{font-size:12px;color:var(--muted);margin-top:6px}
   .ro .tools,.ro .add,.ro .addrow{display:none!important}
 </style>
 </head>
@@ -139,6 +156,14 @@
     </div>
   </section>
 
+
+  <section id="map-sec">
+    <h2>地圖 <span class="tag">點地點可開 Google 地圖</span></h2>
+    <div class="chips" id="mapchips"></div>
+    <div id="map"></div>
+    <div class="mapnote">圖釘位置是大概位置；要導航請點地點裡的「Google 地圖」。</div>
+    <div class="maplist" id="maplist"></div>
+  </section>
   <section>
     <h2>住宿</h2>
     <div class="card" style="padding:6px 14px">
@@ -184,6 +209,8 @@
 </main>
 <footer>2027 青森之旅</footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>if(!window.L){document.write('<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>');}</script>
 <script>
 // ===== 行程資料：在 GitHub 上直接修改這一段就能更新網站 =====
 const TRIP_DATA = {
@@ -191,37 +218,37 @@ const TRIP_DATA = {
   {
    "id": "d1",
    "label": "3/6 六",
-   "title": "抵達・青森市區",
+   "title": "抵達 → 弘前",
    "ord": 1
   },
   {
    "id": "d2",
    "label": "3/7 日",
-   "title": "縣立美術館＋淺蟲水族館",
+   "title": "弘前 → 奧入瀨",
    "ord": 2
   },
   {
    "id": "d3",
    "label": "3/8 一",
-   "title": "青森 → 奧入瀨",
+   "title": "奧入瀨整天",
    "ord": 3
   },
   {
    "id": "d4",
    "label": "3/9 二",
-   "title": "奧入瀨整天",
+   "title": "奧入瀨 → 青森",
    "ord": 4
   },
   {
    "id": "d5",
    "label": "3/10 三",
-   "title": "奧入瀨 → 弘前",
+   "title": "縣立美術館＋淺蟲水族館",
    "ord": 5
   },
   {
    "id": "d6",
    "label": "3/11 四",
-   "title": "弘前 → 返台",
+   "title": "青森 → 返台",
    "ord": 6
   }
  ],
@@ -232,242 +259,161 @@ const TRIP_DATA = {
    "ord": 1,
    "t": "14:20",
    "title": "抵達青森機場（BR122）",
-   "note": "機場巴士到青森站約 35 分",
-   "must": 0
+   "note": "",
+   "must": false
   },
   {
    "id": "d1-1",
    "day": "d1",
    "ord": 2,
-   "t": "傍晚",
-   "title": "入住 ReLabo",
-   "note": "",
-   "must": 0
+   "t": "15:05 / 16:15",
+   "title": "搭弘南巴士直達弘前",
+   "note": "約 55 分，IC ¥1,600，不收現金。入境順利搭 15:05，來不及搭 16:15（約 17:10 到）",
+   "must": true
   },
   {
    "id": "d1-2",
    "day": "d1",
    "ord": 3,
-   "t": "",
-   "title": "A-Factory、睡魔之家 Wa Rasse",
-   "note": "都在青森站旁，蘋果酒和睡魔燈籠",
-   "must": 0
+   "t": "傍晚",
+   "title": "入住弘前飯店",
+   "note": "",
+   "must": false
   },
   {
    "id": "d1-3",
    "day": "d1",
    "ord": 4,
    "t": "晚上",
-   "title": "海鮮晚餐",
-   "note": "扇貝料理",
-   "must": 0
-  },
-  {
-   "id": "d2-0",
-   "day": "d2",
-   "ord": 1,
-   "t": "07:30",
-   "title": "古川市場「のっけ丼」",
-   "note": "青森魚菜中心，7:00 開門，飯賣完就提早結束；週二公休",
-   "must": 0
-  },
-  {
-   "id": "d2-1",
-   "day": "d2",
-   "ord": 2,
-   "t": "09:00",
-   "title": "搭巴士去美術館",
-   "note": "青森站前 6 號站牌，市營巴士「三内丸山遺跡行き」到「県立美術館前」，約 30 分",
-   "must": 0
-  },
-  {
-   "id": "d2-2",
-   "day": "d2",
-   "ord": 3,
-   "t": "09:30–11:30",
-   "title": "青森縣立美術館",
-   "note": "奈良美智「あおもり犬」、夏卡爾〈阿列哥〉四幅全展、志賀理江子特展（展到 3/14）。第 2、4 個週一休館",
-   "must": 1
-  },
-  {
-   "id": "d2-3",
-   "day": "d2",
-   "ord": 4,
-   "t": "約 11:45",
-   "title": "回青森站 → 青い森鐵道到淺蟲溫泉站",
-   "note": "鐵道約 20 分",
-   "must": 0
-  },
-  {
-   "id": "d2-4",
-   "day": "d2",
-   "ord": 5,
-   "t": "13:00–15:00",
-   "title": "淺蟲水族館",
-   "note": "9:00–17:00，¥1,200。海底隧道水槽、配津輕三味線的海豚表演（先查場次）",
-   "must": 1
-  },
-  {
-   "id": "d2-5",
-   "day": "d2",
-   "ord": 6,
-   "t": "15:30",
-   "title": "「ゆ〜さ淺蟲」展望浴場",
-   "note": "看陸奧灣泡湯，¥360",
-   "must": 0
-  },
-  {
-   "id": "d2-6",
-   "day": "d2",
-   "ord": 7,
-   "t": "傍晚",
-   "title": "回青森市區",
+   "title": "津輕三味線現場演奏餐廳",
    "note": "",
-   "must": 0
+   "must": false
   },
   {
    "id": "d3-0",
    "day": "d3",
    "ord": 1,
-   "t": "上午",
-   "title": "廣田神社",
-   "note": "青森站走路約 15 分，以消災、去病聞名，有御朱印",
-   "must": 1
+   "t": "09:20–11:30",
+   "title": "春雪山毛櫸林雪地鞋漫步",
+   "note": "¥4,950，含裝備租借；7 歲以上、每團 8 人、日語導覽。前一天 18:00 後取消收全額。看不到樹冰",
+   "must": true
   },
   {
    "id": "d3-1",
    "day": "d3",
    "ord": 2,
-   "t": "",
-   "title": "善知鳥神社",
-   "note": "青森市發祥地，順路",
-   "must": 0
+   "t": "中午",
+   "title": "回飯店吃飯、休息",
+   "note": "",
+   "must": false
   },
   {
    "id": "d3-2",
    "day": "d3",
    "ord": 3,
-   "t": "",
-   "title": "青森站周邊買伴手禮",
-   "note": "",
-   "must": 0
+   "t": "14:00",
+   "title": "奧入瀨溪流巴士觀光",
+   "note": "約 50 分，馬門岩、石戶之瀨看冰柱。另有 12:50 場；太累可改 3/9 早上",
+   "must": true
   },
   {
    "id": "d3-3",
    "day": "d3",
    "ord": 4,
-   "t": "下午",
-   "title": "搭星野接駁車到奧入瀨",
-   "note": "約 2 小時，須預約",
-   "must": 0
-  },
-  {
-   "id": "d3-4",
-   "day": "d3",
-   "ord": 5,
-   "t": "晚上",
-   "title": "泡溫泉、飯店冬季活動",
-   "note": "",
-   "must": 0
-  },
-  {
-   "id": "d4-0",
-   "day": "d4",
-   "ord": 1,
-   "t": "09:20–11:30",
-   "title": "春雪山毛櫸林雪地鞋漫步",
-   "note": "¥4,950，含裝備租借；7 歲以上、每團 8 人、日語導覽。看不到樹冰",
-   "must": 1
-  },
-  {
-   "id": "d4-1",
-   "day": "d4",
-   "ord": 2,
-   "t": "中午",
-   "title": "回飯店吃飯、休息",
-   "note": "",
-   "must": 0
-  },
-  {
-   "id": "d4-2",
-   "day": "d4",
-   "ord": 3,
-   "t": "14:00",
-   "title": "奧入瀨溪流巴士觀光",
-   "note": "約 50 分，馬門岩、石戶之瀨看冰柱。另有 12:50 場",
-   "must": 1
-  },
-  {
-   "id": "d4-3",
-   "day": "d4",
-   "ord": 4,
    "t": "",
-   "title": "泡溫泉",
+   "title": "泡溫泉；晚餐吃自備的食物",
    "note": "",
-   "must": 0
+   "must": false
   },
   {
    "id": "d5-0",
    "day": "d5",
    "ord": 1,
-   "t": "早上",
-   "title": "泡溫泉、吃早餐",
-   "note": "",
-   "must": 0
+   "t": "07:30",
+   "title": "古川市場「のっけ丼」",
+   "note": "青森魚菜中心，7:00 開門，飯賣完就提早結束",
+   "must": false
   },
   {
    "id": "d5-1",
    "day": "d5",
    "ord": 2,
-   "t": "",
-   "title": "接駁車回青森站 → JR 到弘前",
-   "note": "JR 奧羽本線約 40 分",
-   "must": 0
+   "t": "09:00",
+   "title": "搭巴士去美術館",
+   "note": "青森站前 6 號站牌，市營巴士「三内丸山遺跡行き」到「県立美術館前」，約 30 分",
+   "must": false
   },
   {
    "id": "d5-2",
    "day": "d5",
    "ord": 3,
-   "t": "下午",
-   "title": "弘前城、藤田紀念庭園",
-   "note": "雪中城郭，洋館咖啡和蘋果派",
-   "must": 0
+   "t": "09:30–11:30",
+   "title": "青森縣立美術館",
+   "note": "奈良美智「あおもり犬」、夏卡爾〈阿列哥〉四幅全展、志賀理江子特展（展到 3/14）",
+   "must": true
   },
   {
    "id": "d5-3",
    "day": "d5",
    "ord": 4,
-   "t": "晚上",
-   "title": "津輕三味線現場演奏餐廳",
+   "t": "約 11:45",
+   "title": "回青森站 → 青い森鐵道到淺蟲溫泉站",
+   "note": "鐵道約 20 分",
+   "must": false
+  },
+  {
+   "id": "d5-4",
+   "day": "d5",
+   "ord": 5,
+   "t": "13:00–15:00",
+   "title": "淺蟲水族館",
+   "note": "9:00–17:00，¥1,200。海底隧道水槽、配津輕三味線的海豚表演（先查場次）",
+   "must": true
+  },
+  {
+   "id": "d5-5",
+   "day": "d5",
+   "ord": 6,
+   "t": "15:30",
+   "title": "「ゆ〜さ淺蟲」展望浴場",
+   "note": "看陸奧灣泡湯，¥360",
+   "must": false
+  },
+  {
+   "id": "d5-6",
+   "day": "d5",
+   "ord": 7,
+   "t": "傍晚",
+   "title": "回青森市區",
    "note": "",
-   "must": 0
+   "must": false
   },
   {
    "id": "d6-0",
    "day": "d6",
    "ord": 1,
    "t": "上午",
-   "title": "退房、弘前站附近早餐散步",
+   "title": "退房、青森站周邊買伴手禮",
    "note": "",
-   "must": 0
+   "must": false
   },
   {
    "id": "d6-1",
    "day": "d6",
    "ord": 2,
-   "t": "11:20",
-   "title": "弘前巴士總站搭機場巴士 → 12:15 到青森機場",
-   "note": "11:21 弘前站前也停。IC ¥1,600，不收現金。備用：12:15 發、13:10 到",
-   "must": 1
+   "t": "中午",
+   "title": "青森站搭 JR 巴士青森空港線",
+   "note": "約 35 分、約 ¥740；建議 12:30–13:00 前到機場，出發前查時刻",
+   "must": true
   },
   {
    "id": "d6-2",
    "day": "d6",
    "ord": 3,
    "t": "",
-   "title": "機場午餐、買伴手禮",
+   "title": "機場午餐",
    "note": "",
-   "must": 0
+   "must": false
   },
   {
    "id": "d6-3",
@@ -476,33 +422,132 @@ const TRIP_DATA = {
    "t": "15:30",
    "title": "搭 BR121 返台",
    "note": "",
-   "must": 0
+   "must": false
+  },
+  {
+   "id": "d4-0",
+   "day": "d4",
+   "ord": 1,
+   "t": "早上",
+   "title": "泡溫泉、吃早餐",
+   "note": "3/8 沒參加溪流巴士觀光的話，可報 7:00 或 8:10 場",
+   "must": false
+  },
+  {
+   "id": "d4-1",
+   "day": "d4",
+   "ord": 2,
+   "t": "10:30",
+   "title": "星野接駁車回青森站",
+   "note": "付費、須預約，大人單程 ¥4,000，約 12:30 到",
+   "must": true
+  },
+  {
+   "id": "d4-2",
+   "day": "d4",
+   "ord": 3,
+   "t": "中午",
+   "title": "ReLabo 寄放行李、午餐",
+   "note": "15:00 才能入住",
+   "must": false
+  },
+  {
+   "id": "d4-3",
+   "day": "d4",
+   "ord": 4,
+   "t": "下午",
+   "title": "廣田神社",
+   "note": "青森站走路約 15 分，以消災、去病聞名，有御朱印",
+   "must": true
+  },
+  {
+   "id": "d4-4",
+   "day": "d4",
+   "ord": 5,
+   "t": "",
+   "title": "善知鳥神社",
+   "note": "青森市發祥地，順路",
+   "must": false
+  },
+  {
+   "id": "d4-5",
+   "day": "d4",
+   "ord": 6,
+   "t": "傍晚",
+   "title": "A-Factory、睡魔之家 Wa Rasse、海鮮晚餐",
+   "note": "古川市場週二公休，のっけ丼改 3/10",
+   "must": false
+  },
+  {
+   "id": "d2-0",
+   "day": "d2",
+   "ord": 1,
+   "t": "上午～中午",
+   "title": "弘前城、弘前公園、藤田紀念庭園",
+   "note": "雪中城郭，洋館咖啡和蘋果派，在弘前吃午餐",
+   "must": false
+  },
+  {
+   "id": "d2-1",
+   "day": "d2",
+   "ord": 2,
+   "t": "",
+   "title": "🛒 買兩晚的晚餐（3/7、3/8）",
+   "note": "泡麵、飯糰、點心、飲料。奧入瀨附近沒有商店，3/8 整天在飯店，要一次買齊。弘前或青森站附近買都可以",
+   "must": true
+  },
+  {
+   "id": "d2-2",
+   "day": "d2",
+   "ord": 3,
+   "t": "約 13:30 前",
+   "title": "JR 奧羽本線 弘前 → 青森",
+   "note": "約 40–50 分，14:30 前到青森站",
+   "must": false
+  },
+  {
+   "id": "d2-3",
+   "day": "d2",
+   "ord": 4,
+   "t": "15:00",
+   "title": "星野接駁車（青森站西口廣場出發）",
+   "note": "車程約 150 分。付費、兩天前預約：12 月～3 月大人單程 ¥4,000",
+   "must": true
+  },
+  {
+   "id": "d2-4",
+   "day": "d2",
+   "ord": 5,
+   "t": "約 17:30",
+   "title": "抵達星野，房間吃自備晚餐、泡溫泉",
+   "note": "有帶快煮壺",
+   "must": false
   }
  ],
  "stays": [
   {
    "id": "s1",
    "ord": 1,
-   "dates": "3/6、3/7",
-   "name": "ReLabo Medical Spa & Stay",
-   "status": "已選定",
-   "note": "與青森站相連，有大浴場"
+   "dates": "3/6",
+   "name": "Art Hotel 弘前 City（標準三人房）",
+   "status": "已決定，待訂",
+   "note": "22㎡、3 張單人床，弘前站走路 1 分鐘；入住 14:00、退房 11:00"
   },
   {
    "id": "s2",
    "ord": 2,
-   "dates": "3/8、3/9",
+   "dates": "3/7、3/8",
    "name": "星野 奧入瀨溪流飯店",
-   "status": "已選定",
-   "note": "青森站接駁車，約 2 小時"
+   "status": "已決定，待訂（官網）",
+   "note": "一泊一食（含早餐自助餐 6:30–10:00），晚餐自備；預付，入住前 3 天內取消收全額。青森站接駁車約 150 分"
   },
   {
    "id": "s3",
    "ord": 3,
-   "dates": "3/10",
-   "name": "弘前（首推 Hotel Route-Inn 弘前駅前）",
-   "status": "比較中",
-   "note": "預算每人約 NT$3,000"
+   "dates": "3/9、3/10",
+   "name": "ReLabo Medical Spa & Stay",
+   "status": "待訂（樂天各自訂）",
+   "note": "雙人房 1 間＋單人房 1 間（不含早餐）。與青森站相連，有大浴場"
   }
  ],
  "todos": [
@@ -515,32 +560,32 @@ const TRIP_DATA = {
   {
    "id": "t2",
    "ord": 2,
-   "done": false,
-   "text": "訂機票"
+   "done": true,
+   "text": "訂機票（BR122 / BR121）已完成"
   },
   {
    "id": "t3",
    "ord": 3,
    "done": false,
-   "text": "訂 ReLabo 2 晚"
+   "text": "ReLabo 2 晚（3/9、3/10）：雙人房＋單人房，樂天旅遊各自訂"
   },
   {
    "id": "t4",
    "ord": 4,
    "done": false,
-   "text": "訂星野 2 晚"
+   "text": "星野官網訂 2 晚（3/7、3/8）一泊一食"
   },
   {
    "id": "t5",
    "ord": 5,
    "done": false,
-   "text": "預訂弘前飯店"
+   "text": "預訂弘前 Art Hotel 弘前 City 標準三人房（3/6）"
   },
   {
    "id": "t6",
    "ord": 6,
    "done": false,
-   "text": "預約星野接駁車"
+   "text": "預約星野接駁車：3/7 15:00 青森站西口出發、3/9 10:30 飯店出發（3 人來回共 ¥24,000）"
   },
   {
    "id": "t7",
@@ -558,23 +603,61 @@ const TRIP_DATA = {
    "id": "t9",
    "ord": 9,
    "done": false,
-   "text": "確認弘前機場巴士時刻"
+   "text": "查機場→弘前、青森站→機場巴士時刻"
+  },
+  {
+   "id": "t10",
+   "ord": 10,
+   "done": false,
+   "text": "確認美術館 3/10 有開館"
+  },
+  {
+   "id": "t20",
+   "ord": 20,
+   "done": false,
+   "text": "3/7 買兩晚晚餐（泡麵等）；帶快煮壺、餐具"
   }
  ],
  "ideas": [
   {
    "id": "i1",
    "ord": 1,
-   "text": "樹冰方案 A：住星野時跟飯店樹冰團去（要等飯店公布）"
+   "text": "樹冰方案 A：住星野時跟飯店樹冰團去，排 3/8（要等飯店公布）"
   },
   {
    "id": "i2",
    "ord": 2,
-   "text": "樹冰方案 B：3/7 從青森站搭 JR 巴士去八甲田纜車＋酸湯溫泉"
+   "text": "樹冰方案 B：3/10 從青森站搭 JR 巴士去八甲田纜車＋酸湯溫泉；美術館和水族館改到 3/9 下午或 3/11 上午擇一"
   }
  ]
 };
 // ===== 行程資料結束 =====
+// ===== 地圖地點：day 對應上面的 d1–d6，"idea" 是備選 =====
+const MAP_PLACES = [
+ {day:"d1", name:"青森機場", lat:40.7347, lng:140.6908},
+ {day:"d1", name:"弘前站", lat:40.5983, lng:140.4855, q:"弘前駅"},
+ {day:"d2", name:"弘前城", lat:40.6077, lng:140.4642, q:"弘前城"},
+ {day:"d2", name:"藤田紀念庭園", lat:40.6038, lng:140.4614, q:"藤田記念庭園"},
+ {day:"d2", name:"青森站", lat:40.8288, lng:140.7342, q:"青森駅"},
+ {day:"d2", name:"星野 奧入瀨溪流飯店", lat:40.5885, lng:141.189, q:"奥入瀬渓流ホテル"},
+ {day:"d3", name:"馬門岩", lat:40.578, lng:141.184, q:"馬門岩 奥入瀬"},
+ {day:"d3", name:"石ヶ戸の瀬", lat:40.5705, lng:141.1775, q:"石ヶ戸 奥入瀬"},
+ {day:"d4", name:"ReLabo（青森站）", lat:40.8288, lng:140.7342, q:"ReLabo Medical Spa & Stay 青森"},
+ {day:"d4", name:"廣田神社", lat:40.8215, lng:140.7468, q:"廣田神社 青森市"},
+ {day:"d4", name:"善知鳥神社", lat:40.8262, lng:140.7446, q:"善知鳥神社"},
+ {day:"d4", name:"A-Factory", lat:40.8297, lng:140.7349, q:"A-FACTORY 青森"},
+ {day:"d4", name:"睡魔之家 Wa Rasse", lat:40.8283, lng:140.7364, q:"ねぶたの家 ワ・ラッセ"},
+ {day:"d5", name:"古川市場（のっけ丼）", lat:40.8236, lng:140.74, q:"青森魚菜センター"},
+ {day:"d5", name:"青森縣立美術館", lat:40.8118, lng:140.6868, q:"青森県立美術館"},
+ {day:"d5", name:"淺蟲水族館", lat:40.8975, lng:140.8628, q:"浅虫水族館"},
+ {day:"d5", name:"ゆ〜さ淺蟲", lat:40.8947, lng:140.8596, q:"道の駅 浅虫温泉 ゆ〜さ浅虫"},
+ {day:"d6", name:"青森站", lat:40.8288, lng:140.7342, q:"青森駅"},
+ {day:"d6", name:"青森機場", lat:40.7347, lng:140.6908},
+ {day:"idea", name:"八甲田纜車（樹冰）", lat:40.6745, lng:140.8545, q:"八甲田ロープウェー"},
+ {day:"idea", name:"酸湯溫泉", lat:40.6487, lng:140.8487, q:"酸ヶ湯温泉"}
+];
+// ===== 地圖地點結束 =====
+
 </script>
 <script>
 (function(){
@@ -629,7 +712,7 @@ const TRIP_DATA = {
 
   function renderNav(){
     const nav = $('#daynav'); nav.textContent='';
-    nav.append(h('a',{href:'#overview'},'航班與住宿'));
+    nav.append(h('a',{href:'#overview'},'航班與住宿'), h('a',{href:'#map-sec'},'地圖'));
     for (const d of [...S.days].sort(byOrd)) nav.append(h('a',{href:'#day-'+d.id}, d.label));
     nav.append(h('a',{href:'#ideas-sec'},'備選'), h('a',{href:'#todo-sec'},'待辦'));
   }
@@ -806,12 +889,66 @@ const TRIP_DATA = {
       }, err=>{ clearTimeout(timer); console.error(err); setStatus('共享資料連線中斷，請重新整理頁面。'); });
     }
   }
+
+  // ---------- map ----------
+  const DAY_COLORS = {d1:"#c8423b",d2:"#d9822b",d3:"#2f7a4a",d4:"#2f6fb0",d5:"#7a4fb5",d6:"#5f6f7e",idea:"#9aa7b2"};
+  const gmap = p => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.q || p.name);
+  let mapFilter = "all", leafMap = null, layer = null, lastBounds = null;
+  function fitTo(b){ if(!b||!b.length) return; if(b.length===1) leafMap.setView(b[0],14); else leafMap.fitBounds(b,{padding:[30,30]}); }
+  function dayLabel(id){ if(id==="idea") return "備選"; const d=(S.days.length?S.days:TRIP_DATA.days).find(x=>x.id===id); return d?d.label:id; }
+  function shown(){ return MAP_PLACES.filter(p=>mapFilter==="all"||p.day===mapFilter); }
+  function renderMapChips(){
+    const box=$('#mapchips'); box.textContent='';
+    const ids=["all","d1","d2","d3","d4","d5","d6","idea"];
+    for(const id of ids){
+      box.append(h('button',{class:'chip'+(mapFilter===id?' on':''),onclick:()=>{mapFilter=id;renderMap();}},
+        id!=="all"? h('i',{style:'background:'+DAY_COLORS[id]}):null, id==="all"?"全部":dayLabel(id)));
+    }
+  }
+  function renderMapList(){
+    const box=$('#maplist'); box.textContent='';
+    shown().forEach((p,i)=>box.append(h('a',{href:gmap(p),target:'_blank',rel:'noopener'},h('i',{style:'background:'+DAY_COLORS[p.day]}),dayLabel(p.day)+'・'+p.name)));
+  }
+  function renderMap(){
+    renderMapChips(); renderMapList();
+    if(!window.L){ const m=$('#map'); m.style.display='grid'; m.style.placeItems='center'; m.style.height='auto'; m.style.padding='18px'; m.textContent='地圖載入失敗，請重新整理，或直接點下面的地點開 Google 地圖。'; return; }
+    if(!leafMap){
+      leafMap=L.map('map',{scrollWheelZoom:false});
+      const carto=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:18,subdomains:'abcd',
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'}).addTo(leafMap);
+      let errs=0, switched=false;
+      carto.on('tileerror',()=>{ if(++errs>=3 && !switched){ switched=true; leafMap.removeLayer(carto);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(leafMap); } });
+      const fix=()=>{ try{ leafMap.invalidateSize(); if(lastBounds) fitTo(lastBounds); }catch(e){} };
+      setTimeout(fix,300); setTimeout(fix,1200);
+      window.addEventListener('load',fix); window.addEventListener('resize',fix);
+      layer=L.layerGroup().addTo(leafMap);
+    }
+    layer.clearLayers();
+    const pts=shown(), bounds=[];
+    const counters={};
+    pts.forEach(p=>{
+      counters[p.day]=(counters[p.day]||0)+1;
+      const n = p.day==="idea" ? "?" : counters[p.day];
+      const icon=L.divIcon({className:'',html:'<div class="pin" style="background:'+DAY_COLORS[p.day]+'"><span>'+n+'</span></div>',iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-24]});
+      const pop=document.createElement('div');
+      pop.append(h('b',null,p.name), h('div',{style:'color:#5f6f7e'},dayLabel(p.day)), h('a',{href:gmap(p),target:'_blank',rel:'noopener'},'在 Google 地圖開啟 ↗'));
+      L.marker([p.lat,p.lng],{icon}).bindPopup(pop).addTo(layer);
+      bounds.push([p.lat,p.lng]);
+    });
+    if(mapFilter!=="all" && mapFilter!=="idea"){
+      const line=pts.map(p=>[p.lat,p.lng]);
+      if(line.length>1) L.polyline(line,{color:DAY_COLORS[mapFilter],weight:3,opacity:.6,dashArray:'6 6'}).addTo(layer);
+    }
+    lastBounds=bounds; fitTo(bounds);
+  }
   function useStatic(){
     canWrite=false; document.body.classList.add('ro');
     for (const k of ['days','items','todos','ideas','stays']){ S[k]=TRIP_DATA[k]||[]; loaded[k]=true; }
-    setStatus(''); render();
+    setStatus(''); render(); renderMap();
   }
   render();
+  try{ renderMap(); }catch(e){ console.error(e); }
   start();
 })();
 </script>
