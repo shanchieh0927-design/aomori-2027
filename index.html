@@ -155,6 +155,17 @@ form.add label.ck{display:inline-flex;gap:4px;align-items:center;font-size:14px}
 .pos{color:#4E8A3A;font-weight:700}.neg{color:#C0574A;font-weight:700}
 .settle{list-style:none;margin:8px 0 0;padding:0}
 .settle li{background:var(--wakatake-l);border:var(--line);border-radius:var(--r-s);padding:8px 12px;margin-bottom:8px;font-weight:700}
+
+/* personal ledger */
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
+.sum .box{border:var(--line);border-radius:var(--r-s);padding:8px 12px;background:var(--mizu-l)}
+.sum .box b{display:block;font-size:22px}
+.sum .box.tw{background:var(--wakatake-l)} .sum .box.all{background:var(--yama-l)}
+.cats{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 12px}
+.cats span{font-size:13px;border:2px solid var(--ink);border-radius:999px;padding:0 10px;background:#fff}
+.rate{display:flex;align-items:center;gap:6px;font-size:14px;margin:6px 0 10px;flex-wrap:wrap}
+.rate input{width:90px;border:var(--line);border-radius:10px;padding:4px 8px;background:#fff}
+.lday{font-weight:700;margin:12px 0 2px;font-size:15px}
 footer{text-align:center;color:var(--muted);font-size:13px;padding:20px 0 50px}
 footer svg{width:120px;height:auto;display:block;margin:0 auto 6px}
 
@@ -188,6 +199,7 @@ footer svg{width:120px;height:auto;display:block;margin:0 auto 6px}
   <a href="#prep">出發前</a>
   <a href="#pack">行李</a>
   <a href="#split">分帳</a>
+  <a href="#ledger">記帳</a>
   <a href="#tt">時刻表</a>
 </div></nav>
 
@@ -339,6 +351,27 @@ footer svg{width:120px;height:auto;display:block;margin:0 auto 6px}
       <div class="row" style="margin-top:10px"><button class="btn ghost" type="button" id="copysplit">複製結算文字（貼到 LINE）</button> <span class="note" id="copied"></span></div>
     </div>
     <p class="note">黃色標籤「共用」是寫在網站裡的帳，大家都看得到；自己加的帳只存在你這台手機或電腦。想讓大家都看到，就把它加進 GitHub 上的 SPLIT 資料。台幣和日圓分開算。</p>
+  </section>
+
+  <section id="ledger">
+    <h2><span class="dot" style="background:var(--wakatake)"></span>我的記帳</h2>
+    <div class="card">
+      <div class="sum" id="lsum"></div>
+      <div class="rate">匯率：1 日圓 ＝ <input type="number" id="lrate" step="0.001" min="0" placeholder="例 0.21"> 台幣 <span class="note">（填了就會換算總額）</span></div>
+      <div class="cats" id="lcats"></div>
+      <form class="add" id="ladd">
+        <div class="row"><select name="day" id="lday"></select>
+          <select name="cat"><option>餐飲</option><option>交通</option><option>住宿</option><option>門票・活動</option><option>購物・伴手禮</option><option>其他</option></select></div>
+        <div class="row"><input class="grow" type="text" name="item" placeholder="項目，例：のっけ丼" required maxlength="60">
+          <input type="number" name="amt" placeholder="金額" min="1" step="1" required style="width:110px">
+          <select name="cur"><option value="JPY">日圓</option><option value="TWD">台幣</option></select></div>
+        <div class="row"><select name="pay"><option>現金</option><option>信用卡</option><option>IC 卡</option><option>其他</option></select>
+          <button class="btn" type="submit">＋ 記一筆</button></div>
+      </form>
+      <div id="llist"></div>
+      <div class="row" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" type="button" id="lcopy">複製明細</button><span class="note" id="lcopied"></span></div>
+    </div>
+    <p class="note">這裡只存在你自己的手機或電腦，別人看不到；換手機或清除瀏覽器資料會不見，記得偶爾按「複製明細」備份。</p>
   </section>
   <section id="tt">
     <h2><span class="dot" style="background:var(--yama)"></span>交通時刻表</h2>
@@ -593,6 +626,46 @@ checklist("ehon-prep",PREP.map((p,i)=>({id:"p"+i,text:p[0]})),$("#prep-list"),$(
   $("#copysplit").addEventListener("click",async()=>{const txt="【青森之旅分帳】\n"+(lines.length?lines.join("\n"):"已經結清");
     try{await navigator.clipboard.writeText(txt);$("#copied").textContent="已複製！";}catch(e){$("#copied").textContent="無法自動複製，請手動選取上面的文字";}});
   renderAll();
+})();
+
+
+// personal ledger
+(function(){
+  let L=store.get("ehon-ledger",[]); let rate=store.get("ehon-rate",""); const rin=$("#lrate"); rin.value=rate;
+  const DAYS=["出發前"].concat(days.map(d=>d.label));
+  const sel=$("#lday"); DAYS.forEach(d=>sel.append(h("option",{value:d},d)));
+  const today=new Date(), lab=(today.getMonth()+1)+"/"+today.getDate()+" "; const hit=DAYS.find(d=>d.startsWith(lab)); if(hit) sel.value=hit;
+  const fmt=(n,c)=>(c==="JPY"?"¥":"NT$")+Math.round(n).toLocaleString();
+  function render(){
+    const jp=L.filter(x=>x.cur==="JPY").reduce((a,x)=>a+x.amt,0), tw=L.filter(x=>x.cur==="TWD").reduce((a,x)=>a+x.amt,0);
+    const r=parseFloat(rate); const s=$("#lsum"); s.textContent="";
+    s.append(h("div",{class:"box"},"日圓",h("b",null,fmt(jp,"JPY"))),h("div",{class:"box tw"},"台幣",h("b",null,fmt(tw,"TWD"))));
+    if(r>0) s.append(h("div",{class:"box all"},"合計（換成台幣）",h("b",null,fmt(tw+jp*r,"TWD"))));
+    const cats={}; L.forEach(x=>{const v=x.cur==="JPY"?(r>0?x.amt*r:null):x.amt; const k=x.cat;
+      if(!cats[k])cats[k]={tw:0,jp:0}; if(x.cur==="JPY")cats[k].jp+=x.amt; else cats[k].tw+=x.amt;});
+    const c=$("#lcats"); c.textContent="";
+    Object.entries(cats).forEach(([k,v])=>c.append(h("span",null,k+"："+[v.jp?fmt(v.jp,"JPY"):"",v.tw?fmt(v.tw,"TWD"):""].filter(Boolean).join("＋"))));
+    const box=$("#llist"); box.textContent="";
+    if(!L.length){box.append(h("p",{class:"note"},"還沒有記帳。"));return;}
+    for(const d of DAYS){
+      const rows=L.map((x,i)=>[x,i]).filter(([x])=>x.day===d); if(!rows.length) continue;
+      const sub=rows.reduce((a,[x])=>{a[x.cur]=(a[x.cur]||0)+x.amt;return a;},{});
+      box.append(h("div",{class:"lday"},d+"　",h("span",{class:"note"},Object.entries(sub).map(([k,v])=>fmt(v,k)).join("＋"))));
+      const ul=h("ul",{class:"exp"});
+      rows.forEach(([x,i])=>ul.append(h("li",null,h("div",null,h("div",null,x.item),h("div",{class:"who"},x.cat+"・"+x.pay)),
+        h("div",{class:"amt"},fmt(x.amt,x.cur)),
+        h("button",{class:"x",type:"button",title:"刪除",onclick:()=>{L.splice(i,1);store.set("ehon-ledger",L);render();}},"✕"))));
+      box.append(ul);
+    }
+  }
+  rin.addEventListener("input",()=>{rate=rin.value;store.set("ehon-rate",rate);render();});
+  $("#ladd").addEventListener("submit",ev=>{ev.preventDefault();const f=ev.target;
+    L.push({day:f.day.value,cat:f.cat.value,item:f.item.value.trim(),amt:Math.round(+f.amt.value),cur:f.cur.value,pay:f.pay.value});
+    store.set("ehon-ledger",L); f.item.value=""; f.amt.value=""; render();});
+  $("#lcopy").addEventListener("click",async()=>{
+    const txt="日期,分類,項目,金額,幣別,付款\n"+L.map(x=>[x.day,x.cat,x.item,x.amt,x.cur,x.pay].join(",")).join("\n");
+    try{await navigator.clipboard.writeText(txt);$("#lcopied").textContent="已複製！可以貼到記事本或試算表";}catch(e){$("#lcopied").textContent="無法自動複製";}});
+  render();
 })();
 
 // map
