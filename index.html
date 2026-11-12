@@ -3,773 +3,395 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>2027 青森之旅</title>
+<title>青森繪本旅行 2027</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-  :root{
-    --ink:#1d2a36; --muted:#5f6f7e; --line:#dfe6ec; --bg:#f6f8fa; --card:#fff;
-    --snow:#eef4f8; --deep:#183b56; --accent:#c8423b; --accent-soft:#fbebeb;
-    --ok:#2f7a4a; --radius:14px;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0}
-  body{font-family:"Noto Sans TC",system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;font-size:15px}
-  button,input,textarea,select{font:inherit;color:inherit}
-  a{color:var(--deep)}
-  .wrap{max-width:860px;margin:0 auto;padding:0 18px}
+:root{
+  --paper:#FFFCF6; --ink:#3E3A39; --coral:#F2A497; --yama:#F6D27A; --mizu:#A8D3E6; --wakatake:#B9DAA5;
+  --coral-l:#FBE3DE; --yama-l:#FCF1D2; --mizu-l:#E4F1F7; --wakatake-l:#E7F2E0; --muted:#7A7472;
+  --line:3px solid var(--ink); --r:22px; --r-s:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Huninn","Noto Sans TC",system-ui,sans-serif;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
 
-  /* hero */
-  header.hero{background:linear-gradient(160deg,#183b56 0%,#2f5f82 55%,#8fb3cc 100%);color:#fff;position:relative;overflow:hidden}
-  header.hero .wrap{padding-top:44px;padding-bottom:40px;position:relative;z-index:1}
-  .hero .kicker{letter-spacing:.2em;font-size:12px;opacity:.85}
-  .hero h1{font-family:"Noto Serif TC",serif;font-weight:900;font-size:clamp(34px,7vw,54px);margin:6px 0 6px;line-height:1.15}
-  .hero .sub{opacity:.92;font-size:15px}
-  .hero .count{display:inline-block;margin-top:18px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 14px;font-size:14px}
-  .flakes{position:absolute;inset:0;pointer-events:none;opacity:.5}
+/* top menu */
+.topnav{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:var(--line)}
+.topnav .wrap{display:flex;gap:8px;overflow-x:auto;padding-top:10px;padding-bottom:10px;scrollbar-width:none}
+.topnav .wrap::-webkit-scrollbar{display:none}
+.topnav a{flex:none;text-decoration:none;font-size:14px;padding:6px 14px;border:var(--line);border-radius:999px;background:#fff;white-space:nowrap}
+.topnav a:active{transform:translateY(1px)}
+.topnav a.logo{background:var(--coral);font-weight:700}
 
-  nav.days{position:sticky;top:0;z-index:5;background:rgba(246,248,250,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
-  nav.days .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:10px;padding-bottom:10px;scrollbar-width:none}
-  nav.days a{flex:none;text-decoration:none;color:var(--ink);font-size:13px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);white-space:nowrap}
-  nav.days a:hover{border-color:var(--deep)}
+/* hero */
+.hero{padding:22px 0 8px;text-align:center}
+.hero-art{border:var(--line);border-radius:var(--r);background:var(--mizu-l);overflow:hidden;line-height:0}
+.hero-art svg{width:100%;height:auto;display:block}
+.hero h1{font-size:clamp(30px,8vw,44px);margin:18px 0 2px;letter-spacing:.06em}
+.hero .sub{color:var(--muted);font-size:15px}
+.count{display:inline-flex;align-items:baseline;gap:6px;margin-top:14px;background:var(--yama);border:var(--line);border-radius:999px;padding:8px 20px;font-size:16px}
+.count b{font-size:30px;line-height:1}
 
-  section{margin:30px 0}
-  h2{font-family:"Noto Serif TC",serif;font-size:22px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
-  h2 .tag{font-family:"Noto Sans TC";font-size:12px;font-weight:500;color:var(--muted);background:var(--snow);padding:2px 10px;border-radius:999px}
+section{margin:34px 0}
+h2{font-size:24px;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+h2 .dot{width:18px;height:18px;border:var(--line);border-radius:50%;flex:none}
+.card{background:#fff;border:var(--line);border-radius:var(--r);padding:16px 18px}
+.note{color:var(--muted);font-size:13px}
 
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media (max-width:620px){.grid2{grid-template-columns:1fr}}
-  .flight .code{font-weight:700;color:var(--deep);font-size:18px}
-  .flight .route{font-size:14px;color:var(--muted)}
-  .flight .time{font-size:20px;font-weight:700;margin-top:4px}
+/* flights */
+.flights{display:grid;gap:14px}
+.flight{display:flex;align-items:center;gap:14px;background:#fff;border:var(--line);border-radius:var(--r);padding:14px 16px}
+.flight .ico{flex:none;width:64px;height:64px;border:var(--line);border-radius:50%;display:grid;place-items:center}
+.flight .ico svg{width:44px;height:44px}
+.flight .code{font-size:20px;font-weight:700}
+.flight .route{font-size:14px;color:var(--muted)}
+.flight .time{font-size:22px;font-weight:700;letter-spacing:.02em}
 
-  table{width:100%;border-collapse:collapse}
-  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
-  th{font-size:12px;color:var(--muted);font-weight:500}
-  .pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;background:var(--snow);color:var(--deep);white-space:nowrap}
-  .pill.done{background:#e5f4e4;color:var(--ok)}
-  .pill.wait{background:#f9eeda;color:#8a5a12}
+/* day tabs */
+.daytabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
+.daytabs::-webkit-scrollbar{display:none}
+.daytab{flex:none;border:var(--line);border-radius:var(--r-s);background:#fff;padding:6px 12px;cursor:pointer;text-align:center;min-width:66px}
+.daytab .d{font-size:18px;font-weight:700;display:block;line-height:1.2}
+.daytab .w{font-size:12px;color:var(--muted)}
+.daytab[aria-selected="true"]{background:var(--coral)}
+.daytab[aria-selected="true"] .w{color:var(--ink)}
+.dayhead{display:flex;align-items:center;gap:12px;margin:6px 0 12px}
+.dayhead .big{font-size:28px;font-weight:700}
+.dayhead .ttl{font-size:17px}
+.dayart{width:56px;height:56px;flex:none}
+.daypanel.bounce{animation:bounce .55s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bounce{0%{transform:translateY(14px) scale(.98);opacity:.3}60%{transform:translateY(-4px) scale(1.005);opacity:1}100%{transform:none}}
 
-  .day{scroll-margin-top:64px}
-  .day-head{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}
-  .day-head .date{font-family:"Noto Serif TC",serif;font-weight:900;font-size:28px;color:var(--deep);line-height:1}
-  .day-head .title{font-size:17px;font-weight:700}
-  .stops{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);margin-left:6px}
-  .stop{position:relative;padding:4px 0 14px 20px}
-  .stop::before{content:"";position:absolute;left:-7px;top:12px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--deep)}
-  .stop.must::before{background:var(--accent);border-color:var(--accent)}
-  .stop .row{display:flex;gap:10px;align-items:flex-start}
-  .stop .t{flex:none;min-width:78px;font-size:13px;color:var(--muted);padding-top:2px}
-  .stop .body{flex:1;min-width:0}
-  .stop .ttl{font-weight:700}
-  .stop .ttl .must{font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 6px;margin-left:6px;font-weight:500;vertical-align:2px}
-  .stop .note{color:var(--muted);font-size:14px;white-space:pre-wrap;word-break:break-word}
+/* timeline */
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl::before{content:"";position:absolute;left:15px;top:8px;bottom:8px;border-left:3px dashed var(--ink);opacity:.35}
+.tl li{position:relative;padding:0 0 16px 46px}
+.tl li::before{content:"";position:absolute;left:5px;top:8px;width:20px;height:20px;border-radius:50%;background:#fff;border:var(--line)}
+.tl li.must::before{background:var(--coral)}
+.tl .time{font-size:13px;color:var(--muted)}
+.tl .t{font-weight:700;font-size:16px}
+.tl .n{font-size:14px;color:var(--muted);margin-top:2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{font-size:12px;border:2px solid var(--ink);border-radius:999px;padding:0 9px;line-height:20px;background:#fff}
+.tag.must{background:var(--coral);font-weight:700}
+.m-飛機{background:var(--mizu)} .m-巴士{background:var(--yama)} .m-JR,.m-鐵道{background:var(--wakatake)}
+.m-接駁車{background:var(--coral-l)} .m-步行{background:#fff} .m-高鐵,.m-捷運{background:var(--mizu-l)} .m-導覽{background:var(--yama-l)}
 
-  .tools{flex:none;display:flex;gap:2px;opacity:.0;transition:opacity .15s}
-  .stop:hover .tools,.li:hover .tools,.tools:focus-within,.touch .tools{opacity:1}
-  .ib{border:0;background:transparent;cursor:pointer;width:28px;height:28px;border-radius:8px;color:var(--muted);display:inline-grid;place-items:center;font-size:14px}
-  .ib:hover{background:var(--snow);color:var(--ink)}
-  .ib.del:hover{background:var(--accent-soft);color:var(--accent)}
+/* lists */
+.check{list-style:none;margin:0;padding:0}
+.check li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:2px dashed #e4ddd6}
+.check li:last-child{border-bottom:0}
+.check input{appearance:none;-webkit-appearance:none;flex:none;width:24px;height:24px;border:var(--line);border-radius:8px;background:#fff;margin:1px 0 0;cursor:pointer;display:grid;place-items:center}
+.check input:checked{background:var(--wakatake)}
+.check input:checked::after{content:"";width:10px;height:6px;border-left:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(-45deg) translate(1px,-1px)}
+.check label{cursor:pointer;flex:1}
+.check li.done label{color:#a8a19d;text-decoration:line-through}
+.progress{height:14px;border:var(--line);border-radius:999px;background:#fff;overflow:hidden;margin:4px 0 12px}
+.progress i{display:block;height:100%;background:var(--wakatake);border-right:3px solid var(--ink);transition:width .3s}
+.cols{display:grid;gap:14px}
+@media(min-width:620px){.cols{grid-template-columns:1fr 1fr}}
+.group h3{margin:0 0 6px;font-size:17px;display:flex;gap:8px;align-items:center}
+.group h3 span{width:14px;height:14px;border:2px solid var(--ink);border-radius:4px}
 
-  .add{margin:4px 0 0 20px;border:1px dashed #b9c6d1;background:transparent;color:var(--muted);border-radius:10px;padding:6px 12px;cursor:pointer;font-size:13px}
-  .add:hover{color:var(--deep);border-color:var(--deep);background:#fff}
+/* stays */
+.stays{display:grid;gap:12px}
+.stay{background:#fff;border:var(--line);border-radius:var(--r);padding:14px 16px;display:flex;gap:14px}
+.stay .when{flex:none;width:68px;text-align:center;border:var(--line);border-radius:var(--r-s);background:var(--yama-l);padding:6px 4px;font-size:14px;line-height:1.3;align-self:flex-start}
+.stay .name{font-weight:700}
+.stay .st{display:inline-block;font-size:12px;border:2px solid var(--ink);border-radius:999px;padding:0 9px;margin-left:6px;background:var(--wakatake)}
+.stay .st.wait{background:var(--yama)}
 
-  form.edit{background:var(--snow);border-radius:12px;padding:12px;display:grid;gap:8px;margin:4px 0}
-  form.edit .r{display:flex;gap:8px;flex-wrap:wrap}
-  form.edit input,form.edit textarea{border:1px solid #c9d5df;border-radius:8px;padding:7px 10px;background:#fff;width:100%}
-  form.edit input.tm{width:120px;flex:none}
-  form.edit input.tt{flex:1;min-width:180px;width:auto}
-  form.edit textarea{min-height:64px;resize:vertical}
-  form.edit label.chk{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
-  .btns{display:flex;gap:8px;justify-content:flex-end;align-items:center}
-  .btn{border:0;border-radius:9px;padding:7px 14px;cursor:pointer;font-weight:500}
-  .btn.primary{background:var(--deep);color:#fff}
-  .btn.ghost{background:transparent;color:var(--muted)}
-  .btn.danger{background:var(--accent);color:#fff}
-  .confirm{font-size:13px;color:var(--accent);display:flex;gap:8px;align-items:center;margin-top:6px}
+/* timetable */
+.tt{width:100%;border-collapse:separate;border-spacing:0;margin:6px 0 4px;font-size:14px}
+.tt th,.tt td{padding:7px 8px;border-bottom:2px dashed #e4ddd6;text-align:left}
+.tt th{font-size:12px;color:var(--muted)}
+.tt tr.pick td{background:var(--yama-l);font-weight:700}
+.tt-h{font-weight:700;margin:16px 0 2px}
+details.card{padding:0}
+details.card summary{cursor:pointer;padding:14px 18px;font-weight:700;list-style:none;display:flex;justify-content:space-between}
+details.card summary::after{content:"＋";}
+details.card[open] summary::after{content:"－"}
+details.card .inner{padding:0 18px 14px}
 
-  .list{list-style:none;margin:0;padding:0}
-  .li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
-  .li:last-child{border-bottom:0}
-  .li input[type=checkbox]{width:18px;height:18px;margin-top:3px;accent-color:var(--deep);flex:none}
-  .li .txt{flex:1;white-space:pre-wrap;word-break:break-word}
-  .li.done .txt{color:#9aa7b2;text-decoration:line-through}
-  .addrow{display:flex;gap:8px;margin-top:10px}
-  .addrow input{flex:1;border:1px solid var(--line);border-radius:9px;padding:8px 12px;background:#fff}
+/* map */
+#map{height:360px;border:var(--line);border-radius:var(--r);overflow:hidden;background:var(--mizu-l)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{border:2px solid var(--ink);background:#fff;border-radius:999px;padding:2px 12px;font-size:13px;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--paper)}
+.pin{width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid var(--ink);display:grid;place-items:center}
+.pin span{transform:rotate(45deg);font-size:12px;font-weight:700;color:var(--ink)}
+.leaflet-container{font-family:inherit}
+.maplist{margin-top:10px;font-size:14px;columns:2;column-gap:16px}
+@media(max-width:520px){.maplist{columns:1}}
+.maplist a{display:block;text-decoration:none;padding:2px 0}
 
-  .status{font-size:13px;color:var(--muted);text-align:center;padding:10px}
-  .banner{background:#f9eeda;color:#7a5410;border-radius:10px;padding:10px 14px;font-size:14px;margin-top:18px}
-  .links a{display:block;padding:6px 0;font-size:14px}
-  footer{color:var(--muted);font-size:12px;text-align:center;padding:30px 0 50px}
 
-  #map{height:420px;border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;background:var(--snow)}
-  @media (max-width:620px){#map{height:340px}}
-  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
-  .chip.on{background:var(--deep);color:#fff;border-color:var(--deep)}
-  .chip i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:0}
-  .pin{width:26px;height:26px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:grid;place-items:center}
-  .pin span{transform:rotate(45deg);color:#fff;font-size:12px;font-weight:700}
-  .leaflet-popup-content{font-family:"Noto Sans TC",sans-serif;font-size:13px;line-height:1.5}
-  .leaflet-popup-content b{font-size:14px}
-  .maplist{columns:2;column-gap:20px;margin-top:10px;font-size:13px}
-  @media (max-width:620px){.maplist{columns:1}}
-  .maplist a{display:block;padding:3px 0;text-decoration:none}
-  .maplist a i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
-  .mapnote{font-size:12px;color:var(--muted);margin-top:6px}
+/* split */
+.members{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.members input{width:110px;border:var(--line);border-radius:999px;padding:4px 12px;background:#fff;text-align:center}
+.exp{list-style:none;margin:0;padding:0}
+.exp li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:2px dashed #e4ddd6}
+.exp li:last-child{border-bottom:0}
+.exp .amt{margin-left:auto;font-weight:700;white-space:nowrap;text-align:right}
+.exp .who{font-size:13px;color:var(--muted)}
+.exp .x{border:2px solid var(--ink);background:#fff;border-radius:8px;width:28px;height:28px;cursor:pointer;flex:none}
+.badge{font-size:11px;border:2px solid var(--ink);border-radius:999px;padding:0 7px;margin-left:4px;background:var(--yama-l)}
+form.add{display:grid;gap:8px;margin-top:12px;padding:12px;border:var(--line);border-radius:var(--r-s);background:var(--yama-l)}
+form.add .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+form.add input[type=text],form.add input[type=number],form.add select{border:var(--line);border-radius:10px;padding:6px 10px;background:#fff;min-width:0}
+form.add .grow{flex:1 1 160px}
+form.add label.ck{display:inline-flex;gap:4px;align-items:center;font-size:14px}
+.btn{border:var(--line);border-radius:999px;background:var(--coral);padding:6px 16px;cursor:pointer;font-weight:700}
+.btn.ghost{background:#fff}
+.bal{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;margin-top:6px}
+.bal th,.bal td{padding:7px 6px;border-bottom:2px dashed #e4ddd6;text-align:right}
+.bal th:first-child,.bal td:first-child{text-align:left}
+.pos{color:#4E8A3A;font-weight:700}.neg{color:#C0574A;font-weight:700}
+.settle{list-style:none;margin:8px 0 0;padding:0}
+.settle li{background:var(--wakatake-l);border:var(--line);border-radius:var(--r-s);padding:8px 12px;margin-bottom:8px;font-weight:700}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:20px 0 50px}
+footer svg{width:120px;height:auto;display:block;margin:0 auto 6px}
 
-  .tt{width:100%;border-collapse:collapse;margin:6px 0 14px}
-  .tt th,.tt td{padding:7px 8px;border-bottom:1px solid var(--line);font-size:14px;text-align:left}
-  .tt tr.pick td{background:#e7f1fb;font-weight:700}
-  .tt-h{font-weight:700;margin:14px 0 2px}
-  .tt-note{font-size:13px;color:var(--muted);margin:0 0 4px}
-  .ro .tools,.ro .add,.ro .addrow{display:none!important}
+/* gentle motion */
+.float{animation:float 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.float2{animation:float 5.5s ease-in-out infinite;animation-delay:-2s;transform-box:fill-box;transform-origin:center}
+.sway{animation:sway 3.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 0}
+.drift{animation:drift 22s linear infinite}
+.snow circle{animation:snow 7s linear infinite}
+.plane-fly{animation:fly 9s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes drift{from{transform:translateX(-40px)}to{transform:translateX(40px)}}
+@keyframes snow{from{transform:translateY(-20px)}to{transform:translateY(300px)}}
+@keyframes fly{0%,100%{transform:translate(0,0) rotate(-6deg)}50%{transform:translate(14px,-8px) rotate(-2deg)}}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
 </style>
 </head>
 <body>
-<header class="hero">
-  <svg class="flakes" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <g fill="#fff">
-      <circle cx="60" cy="40" r="2"/><circle cx="140" cy="120" r="1.5"/><circle cx="220" cy="60" r="2.5"/><circle cx="310" cy="200" r="1.5"/>
-      <circle cx="400" cy="90" r="2"/><circle cx="470" cy="30" r="1.5"/><circle cx="540" cy="160" r="2.5"/><circle cx="620" cy="70" r="1.5"/>
-      <circle cx="700" cy="220" r="2"/><circle cx="760" cy="110" r="1.5"/><circle cx="90" cy="250" r="1.5"/><circle cx="360" cy="270" r="2"/>
-    </g>
-    <path d="M0 300 L120 190 L200 240 L330 140 L440 230 L560 160 L680 240 L800 180 L800 300 Z" fill="#fff" opacity=".18"/>
-    <path d="M0 300 L90 240 L210 280 L360 210 L520 270 L650 220 L800 270 L800 300 Z" fill="#fff" opacity=".28"/>
-  </svg>
-  <div class="wrap">
-    <div class="kicker">AOMORI · WINTER 2027</div>
-    <h1>青森之旅</h1>
-    <div class="sub">2027/3/6（六）～ 3/11（四）・六天五夜・3 人・不開車（3/5 先住桃園機場）</div>
-    <div class="count" id="countdown"></div>
-  </div>
-</header>
 
-<nav class="days"><div class="wrap" id="daynav">
-  <a href="#overview">航班與住宿</a>
+<nav class="topnav" aria-label="主選單"><div class="wrap">
+  <a class="logo" href="#top">🍎 青森</a>
+  <a href="#flight">航班</a>
+  <a href="#days">每日行程</a>
+  <a href="#stays">住宿</a>
+  <a href="#map-sec">地圖</a>
+  <a href="#todo">待辦</a>
+  <a href="#prep">出發前</a>
+  <a href="#pack">行李</a>
+  <a href="#split">分帳</a>
+  <a href="#tt">時刻表</a>
 </div></nav>
 
-<main class="wrap" id="app">
-  <div id="banner"></div>
-
-  <section id="overview">
-    <h2>航班 <span class="tag">長榮航空</span></h2>
-    <div class="grid2">
-      <div class="card flight"><div class="code">BR122 去程</div><div class="route">3/6（六）桃園 TPE → 青森 AOJ</div><div class="time">09:55 → 14:20</div></div>
-      <div class="card flight"><div class="code">BR121 回程</div><div class="route">3/11（四）青森 AOJ → 桃園 TPE</div><div class="time">15:30 → 19:00</div></div>
+<main class="wrap" id="top">
+  <header class="hero">
+    <div class="hero-art">
+    <svg viewBox="0 0 720 360" role="img" aria-label="雪中的弘前城、睡魔燈籠、蘋果和飛機">
+      <rect width="720" height="360" fill="#E4F1F7"/>
+      <g class="drift"><g fill="#fff" stroke="#3E3A39" stroke-width="3">
+        <path d="M80 70c0-14 12-24 26-22 6-12 24-14 32-2 14-2 24 8 22 20H80z"/>
+        <path d="M520 54c0-12 10-20 22-18 6-10 20-12 28-2 12-2 20 6 18 16h-68z"/>
+      </g></g>
+      <g class="plane-fly">
+        <g transform="translate(560 96)" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round">
+          <path d="M0 14 L70 6 Q86 4 88 12 Q86 20 70 20 L0 22 Z" fill="#fff"/>
+          <path d="M30 13 L48 -10 L58 -10 L50 14 Z" fill="#A8D3E6"/>
+          <path d="M34 20 L52 38 L62 38 L52 19 Z" fill="#A8D3E6"/>
+          <path d="M2 14 L-8 0 L4 0 L14 14 Z" fill="#F2A497"/>
+          <circle cx="66" cy="12" r="2.5" fill="#3E3A39" stroke="none"/><circle cx="58" cy="12" r="2.5" fill="#3E3A39" stroke="none"/>
+        </g>
+      </g>
+      <!-- mountains -->
+      <path d="M-10 250 L120 120 L190 190 L280 90 L410 230 L470 170 L560 250 Z" fill="#fff" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M95 145 L120 120 L148 148 L132 140 L120 152 L108 140 Z M256 116 L280 90 L306 118 L290 110 L280 124 L268 110 Z" fill="#A8D3E6" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"/>
+      <!-- ground -->
+      <path d="M0 262 Q180 240 360 258 T720 252 V360 H0 Z" fill="#fff" stroke="#3E3A39" stroke-width="3"/>
+      <!-- castle -->
+      <g class="float2" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round">
+        <rect x="300" y="222" width="120" height="44" fill="#FFFCF6"/>
+        <path d="M284 226 L436 226 L420 206 L300 206 Z" fill="#fff"/>
+        <rect x="318" y="176" width="84" height="32" fill="#FFFCF6"/>
+        <path d="M304 180 L416 180 L400 160 L320 160 Z" fill="#fff"/>
+        <rect x="336" y="134" width="48" height="28" fill="#FFFCF6"/>
+        <path d="M322 138 L398 138 L382 116 L338 116 Z" fill="#fff"/>
+        <rect x="352" y="236" width="16" height="30" fill="#F2A497"/>
+        <rect x="330" y="186" width="12" height="12" fill="#A8D3E6"/><rect x="378" y="186" width="12" height="12" fill="#A8D3E6"/>
+        <rect x="353" y="142" width="14" height="12" fill="#A8D3E6"/>
+      </g>
+      <!-- trees -->
+      <g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round">
+        <path d="M200 268 L224 210 L248 268 Z" fill="#B9DAA5"/><path d="M214 236 L224 212 L234 236 L224 230 Z" fill="#fff"/>
+        <path d="M470 268 L490 222 L510 268 Z" fill="#B9DAA5"/><path d="M482 242 L490 224 L498 242 L490 238 Z" fill="#fff"/>
+        <path d="M530 270 L546 236 L562 270 Z" fill="#B9DAA5"/>
+      </g>
+      <!-- nebuta lantern -->
+      <g class="sway">
+        <line x1="120" y1="150" x2="120" y2="196" stroke="#3E3A39" stroke-width="3"/>
+        <g transform="translate(120 196)" stroke="#3E3A39" stroke-width="3">
+          <rect x="-34" y="0" width="68" height="74" rx="16" fill="#F2A497"/>
+          <rect x="-24" y="-6" width="48" height="10" rx="4" fill="#F6D27A"/>
+          <rect x="-24" y="70" width="48" height="10" rx="4" fill="#F6D27A"/>
+          <path d="M-14 26 Q-6 18 2 26 M8 26 Q14 20 20 26" fill="none"/>
+          <path d="M-10 46 Q2 56 14 46" fill="none"/>
+          <circle cx="-8" cy="34" r="3" fill="#3E3A39" stroke="none"/><circle cx="14" cy="34" r="3" fill="#3E3A39" stroke="none"/>
+        </g>
+      </g>
+      <!-- apples -->
+      <g class="float" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round">
+        <g transform="translate(600 270)">
+          <path d="M0 -30 C-26 -44 -46 -16 -36 8 C-28 28 -10 32 0 24 C10 32 28 28 36 8 C46 -16 26 -44 0 -30 Z" fill="#F2A497"/>
+          <path d="M0 -30 Q2 -44 10 -50" fill="none"/>
+          <path d="M4 -40 Q20 -52 30 -40 Q18 -32 4 -40 Z" fill="#B9DAA5"/>
+          <path d="M-20 -14 Q-24 -4 -20 4" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+        </g>
+        <g transform="translate(660 292) scale(.7)">
+          <path d="M0 -30 C-26 -44 -46 -16 -36 8 C-28 28 -10 32 0 24 C10 32 28 28 36 8 C46 -16 26 -44 0 -30 Z" fill="#F6D27A"/>
+          <path d="M0 -30 Q2 -44 10 -50" fill="none"/>
+        </g>
+      </g>
+      <!-- snow -->
+      <g class="snow" fill="#fff" stroke="#3E3A39" stroke-width="2">
+        <circle cx="60" cy="20" r="4"/><circle cx="170" cy="0" r="3" style="animation-delay:-2s"/>
+        <circle cx="250" cy="10" r="4" style="animation-delay:-4s"/><circle cx="450" cy="4" r="3" style="animation-delay:-1s"/>
+        <circle cx="520" cy="16" r="4" style="animation-delay:-5s"/><circle cx="680" cy="0" r="3" style="animation-delay:-3s"/>
+        <circle cx="340" cy="0" r="3" style="animation-delay:-6s"/>
+      </g>
+    </svg>
     </div>
+    <h1>青森繪本旅行</h1>
+    <div class="sub">2027/3/6（六）～ 3/11（四）・弘前・奧入瀨・青森</div>
+    <div class="count" id="count"></div>
+  </header>
+
+  <section id="flight">
+    <h2><span class="dot" style="background:var(--mizu)"></span>航班</h2>
+    <div class="flights">
+      <div class="flight"><div class="ico" style="background:var(--mizu)"><svg viewBox="0 0 44 44"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"><path d="M4 24 L30 20 Q40 20 40 24 Q40 28 30 28 L4 28 Z" fill="#fff"/><path d="M16 23 L24 10 L29 10 L25 24Z M18 28 L25 38 L30 38 L26 27Z" fill="#F6D27A"/><path d="M5 24 L1 16 L7 16 L11 24Z" fill="#F2A497"/></g></svg></div>
+        <div><div class="code">BR122 去程</div><div class="route">3/6（六）桃園 TPE → 青森 AOJ</div><div class="time">09:55 → 14:20</div></div></div>
+      <div class="flight"><div class="ico" style="background:var(--coral)"><svg viewBox="0 0 44 44" style="transform:scaleX(-1)"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"><path d="M4 24 L30 20 Q40 20 40 24 Q40 28 30 28 L4 28 Z" fill="#fff"/><path d="M16 23 L24 10 L29 10 L25 24Z M18 28 L25 38 L30 38 L26 27Z" fill="#F6D27A"/><path d="M5 24 L1 16 L7 16 L11 24Z" fill="#F2A497"/></g></svg></div>
+        <div><div class="code">BR121 回程</div><div class="route">3/11（四）青森 AOJ → 桃園 TPE</div><div class="time">15:30 → 19:00</div></div></div>
+    </div>
+    <p class="note">長榮航空。3/5 先搭高鐵、機場捷運到第二航廈，住航廈裡的 CHO Stay 膠囊旅館；3/6 建議 07:30 前報到。</p>
   </section>
 
+  <section id="days">
+    <h2><span class="dot" style="background:var(--coral)"></span>每日行程</h2>
+    <div class="daytabs" role="tablist" id="daytabs"></div>
+    <div class="card daypanel" id="daypanel" role="tabpanel"></div>
+  </section>
+
+  <section id="stays">
+    <h2><span class="dot" style="background:var(--yama)"></span>住宿資訊</h2>
+    <div class="stays" id="staylist"></div>
+  </section>
 
   <section id="map-sec">
-    <h2>地圖 <span class="tag">點地點可開 Google 地圖</span></h2>
-    <div class="chips" id="mapchips"></div>
+    <h2><span class="dot" style="background:var(--wakatake)"></span>地圖</h2>
+    <div class="chips" id="chips"></div>
     <div id="map"></div>
-    <div class="mapnote">圖釘位置依地址標示（奧入瀨的飯店和景點是大概位置）；要導航請點地點裡的「Google 地圖」。</div>
+    <p class="note">圖釘依地址標示（奧入瀨是大概位置），點圖釘可開 Google 地圖導航。</p>
     <div class="maplist" id="maplist"></div>
   </section>
-  <section>
-    <h2>住宿</h2>
-    <div class="card" style="padding:6px 14px">
-      <table><thead><tr><th style="width:90px">日期</th><th>飯店</th><th style="width:80px">狀態</th><th style="width:64px"></th></tr></thead>
-      <tbody id="stays"></tbody></table>
-      <button class="add" id="addStay" style="margin:10px 0 8px">＋ 新增住宿</button>
-    </div>
+
+  <section id="todo">
+    <h2><span class="dot" style="background:var(--coral)"></span>待辦清單</h2>
+    <div class="card"><div class="progress"><i id="todo-bar"></i></div><ul class="check" id="todo-list"></ul></div>
   </section>
 
-  <div id="days"></div>
+  <section id="prep">
+    <h2><span class="dot" style="background:var(--mizu)"></span>出發前清單</h2>
+    <div class="card"><div class="progress"><i id="prep-bar"></i></div><ul class="check" id="prep-list"></ul></div>
+  </section>
+
+  <section id="pack">
+    <h2><span class="dot" style="background:var(--wakatake)"></span>行李清單</h2>
+    <div class="card"><div class="progress"><i id="pack-bar"></i></div><div class="cols" id="pack-groups"></div></div>
+    <p class="note">打勾只記在你自己的手機或電腦上。</p>
+  </section>
 
 
-  <section id="tt-sec">
-    <h2>交通時刻表 <span class="tag">參考</span></h2>
+  <section id="split">
+    <h2><span class="dot" style="background:var(--coral)"></span>分帳</h2>
     <div class="card">
-      <p class="tt-note">⚠️ 以下是 2026 年 10～11 月的時刻。機場巴士大約每 2 個月配合航班改一次時刻，3 月的版本要到 2 月左右才會公布，出發前一定要再查一次。藍底是建議搭的班次。</p>
+      <div class="note">成員（可以改名字）</div>
+      <div class="members" id="members"></div>
+      <ul class="exp" id="explist"></ul>
+      <form class="add" id="addexp">
+        <div class="row"><input class="grow" type="text" name="item" placeholder="項目，例：大福丸晚餐" required maxlength="60">
+          <input type="number" name="amt" placeholder="金額" min="1" step="1" required style="width:110px">
+          <select name="cur"><option value="TWD">台幣</option><option value="JPY">日圓</option></select></div>
+        <div class="row"><span>誰付的</span><select name="payer" id="payer"></select></div>
+        <div class="row" id="among"><span>誰要分</span></div>
+        <div class="row"><button class="btn" type="submit">＋ 加一筆</button></div>
+      </form>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h3 style="margin:0">結算</h3>
+      <div id="balances"></div>
+      <div class="row" style="margin-top:10px"><button class="btn ghost" type="button" id="copysplit">複製結算文字（貼到 LINE）</button> <span class="note" id="copied"></span></div>
+    </div>
+    <p class="note">黃色標籤「共用」是寫在網站裡的帳，大家都看得到；自己加的帳只存在你這台手機或電腦。想讓大家都看到，就把它加進 GitHub 上的 SPLIT 資料。台幣和日圓分開算。</p>
+  </section>
+  <section id="tt">
+    <h2><span class="dot" style="background:var(--yama)"></span>交通時刻表</h2>
+    <p class="note">2026 年 10～11 月查到的時刻。機場巴士約每 2 個月改點、青い森鐵道和 JR 每年 3 月中改點，出發前再確認一次。黃底是建議班次。</p>
+    <div class="card">
+      
       <div class="tt-h">3/6 青森機場 → 弘前站前（弘南巴士，約 54 分）</div>
       <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>14:00</td><td>14:54</td><td>14:20 才落地，趕不上</td></tr><tr class="pick"><td>15:15</td><td>16:09</td><td>目標班次，落地後約 55 分鐘可以入境、領行李</td></tr><tr><td>16:25</td><td>17:19</td><td>備用</td></tr><tr><td>17:40</td><td>18:34</td><td>備用</td></tr></tbody></table>
-      <p class="tt-note">不收現金，只能用交通系 IC 卡或感應式信用卡；前門上車、下車時付款。</p>
+      <p class="note">不收現金，只能用交通系 IC 卡或感應式信用卡；前門上車、下車時付款。</p>
       <div class="tt-h">3/7 JR 弘前 → 青森（奧羽本線，約 40–50 分）</div>
       <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>11:39</td><td>12:27</td><td>普通車</td></tr><tr class="pick"><td>12:24</td><td>13:12</td><td>推薦，到青森還有時間買東西</td></tr><tr><td>13:06</td><td>約 13:50</td><td>也來得及</td></tr><tr><td>13:45</td><td>約 14:30</td><td>最後一班，沒什麼餘裕，不建議</td></tr></tbody></table>
-      <p class="tt-note">要趕 15:00 的星野接駁車（青森站西口廣場）。12:54 的快速リゾートしらかみ只有特定日行駛。</p>
+      <p class="note">要趕 15:00 的星野接駁車（青森站西口廣場）。12:54 的快速リゾートしらかみ只有特定日行駛。</p>
       <div class="tt-h">3/11 青森站 → 青森機場（JR 巴士，11 號站牌，約 35 分）</div>
       <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>11:00</td><td>11:35</td><td>早一點，可以在機場吃午餐</td></tr><tr class="pick"><td>11:45</td><td>12:20</td><td>推薦，離起飛 3 小時 10 分</td></tr><tr><td>12:30</td><td>13:05</td><td>也可以</td></tr><tr><td>12:40</td><td>13:15</td><td>最晚建議搭這班</td></tr><tr><td>13:40</td><td>14:15</td><td>太趕，不建議</td></tr></tbody></table>
-      <p class="tt-note">搭 15:30 的 BR121。</p>
+      <p class="note">搭 15:30 的 BR121。</p>
 
       <div class="tt-h">3/9 青森市區（都用走的）</div>
-      <p class="tt-note">青森站 → 廣田神社 走路約 15 分（青森地方法院對面）；青森站 → 善知鳥神社 走路約 10 分；A-Factory、睡魔之家 Wa Rasse 都在青森站旁邊。</p>
+      <p class="note">青森站 → 廣田神社 走路約 15 分（青森地方法院對面）；青森站 → 善知鳥神社 走路約 10 分；A-Factory、睡魔之家 Wa Rasse 都在青森站旁邊。</p>
       <div class="tt-h">3/10 青森站前（6 號站牌）→ 縣立美術館前（市營巴士 S51，約 22 分，約 ¥280）</div>
       <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>08:07</td><td>08:29</td><td></td></tr><tr class="pick"><td>08:47</td><td>09:09</td><td>推薦，吃完のっけ丼後搭；開館前可先看隔壁三內丸山遺跡</td></tr><tr><td>09:55</td><td>10:17</td><td>備用</td></tr></tbody></table>
-      <p class="tt-note">後門上車、下車時付款，可以用交通系 IC 卡。</p>
+      <p class="note">後門上車、下車時付款，可以用交通系 IC 卡。</p>
       <div class="tt-h">3/10 縣立美術館前 → 青森站前（A1 國道・古川線，約 23 分）</div>
       <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>10:46</td><td>11:08</td><td>想早點去淺蟲就搭這班，接 12:00 的鐵道</td></tr><tr class="pick"><td>11:46</td><td>12:09</td><td>推薦，回車站附近吃午餐</td></tr><tr><td>13:25</td><td>13:48</td><td>太晚，淺蟲的時間會不夠</td></tr></tbody></table>
       <div class="tt-h">3/10 青森 → 淺蟲溫泉（青い森鐵道，約 20 分，¥540）</div>
       <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>12:00</td><td>約 12:20</td><td>搭 10:46 那班巴士的話</td></tr><tr class="pick"><td>13:18</td><td>約 13:38</td><td>推薦，下車走路約 10 分到水族館</td></tr><tr><td>14:39</td><td>14:59</td><td>快速，備用</td></tr></tbody></table>
       <div class="tt-h">3/10 淺蟲溫泉 → 青森（青い森鐵道，約 25 分）</div>
       <table class="tt"><thead><tr><th>出發</th><th>抵達</th><th>備註</th></tr></thead><tbody><tr><td>15:45</td><td>16:10</td><td></td></tr><tr class="pick"><td>16:42</td><td>17:07</td><td>推薦，泡完展望浴場剛好</td></tr><tr><td>17:35</td><td>18:00</td><td>備用</td></tr><tr><td>18:34</td><td>約 18:59</td><td>備用</td></tr></tbody></table>
-      <p class="tt-note">鐵道時刻是平日版本（3/10 是週三）。青い森鐵道每年 3 月中會改點，出發前再確認。</p>
+      <p class="note">鐵道時刻是平日版本（3/10 是週三）。青い森鐵道每年 3 月中會改點，出發前再確認。</p>
 
       <div class="tt-h">備選：青森站 ⇄ 八甲田纜車（樹冰）／酸湯溫泉（JR 巴士「はっこうだ」號，冬季 11/12～3/31）</div>
-      <p class="tt-note">去程</p>
+      <p class="note">去程</p>
       <table class="tt"><thead><tr><th>班次</th><th>青森站</th><th>新青森站前</th><th>纜車站前</th><th>酸湯溫泉</th></tr></thead><tbody><tr class="pick"><td>2 號</td><td>8:10</td><td>—</td><td>9:10</td><td>9:25</td></tr><tr><td>4 號</td><td>9:20</td><td>9:40</td><td>10:45</td><td>11:00</td></tr><tr><td>6 號</td><td>10:50</td><td>11:10</td><td>12:15</td><td>12:30</td></tr></tbody></table>
-      <p class="tt-note">回程</p>
+      <p class="note">回程</p>
       <table class="tt"><thead><tr><th>班次</th><th>酸湯溫泉</th><th>纜車站前</th><th>青森站</th><th>新青森站前</th></tr></thead><tbody><tr><td>1 號</td><td>10:55</td><td>11:08</td><td>12:03</td><td>12:18</td></tr><tr><td>3 號</td><td>13:30</td><td>13:43</td><td>14:38</td><td>14:53</td></tr><tr class="pick"><td>5 號</td><td>14:50</td><td>15:03</td><td>15:58</td><td>16:13</td></tr></tbody></table>
-      <p class="tt-note">車資（大人）：青森站 → 纜車站前 ¥1,290；青森站 ⇄ 酸湯溫泉 ¥1,570；酸湯溫泉 → 纜車站前 ¥460。下車付現金或交通系 IC 卡。<b>從青森站上車的 2、4、6 號要網路預約</b>，每位 ¥300 預約費，搭車日前 3 個月 10:00 開放；回程不用預約。<br>建議：8:10 青森站 → 9:10 纜車站看樹冰 → 12:15 搭 6 號到酸湯溫泉（12:30）吃午餐、泡湯 → 14:50 搭 5 號回青森（15:58）。</p>
+      <p class="note">車資（大人）：青森站 → 纜車站前 ¥1,290；青森站 ⇄ 酸湯溫泉 ¥1,570；酸湯溫泉 → 纜車站前 ¥460。下車付現金或交通系 IC 卡。<b>從青森站上車的 2、4、6 號要網路預約</b>，每位 ¥300 預約費，搭車日前 3 個月 10:00 開放；回程不用預約。<br>建議：8:10 青森站 → 9:10 纜車站看樹冰 → 12:15 搭 6 號到酸湯溫泉（12:30）吃午餐、泡湯 → 14:50 搭 5 號回青森（15:58）。</p>
     </div>
   </section>
-  <section id="ideas-sec">
-    <h2>備選與想法</h2>
-    <div class="card"><ul class="list" id="ideas"></ul>
-      <form class="addrow" data-add="ideas"><input placeholder="加一個想法或備案…" maxlength="400"><button class="btn primary">加入</button></form>
-    </div>
-  </section>
-
-  <section id="todo-sec">
-    <h2>待辦清單 <span class="tag" id="todoCount"></span></h2>
-    <div class="card"><ul class="list" id="todos"></ul>
-      <form class="addrow" data-add="todos"><input placeholder="新增待辦…" maxlength="300"><button class="btn primary">加入</button></form>
-    </div>
-  </section>
-
-  <section>
-    <h2>參考連結</h2>
-    <div class="card links">
-      <a href="https://flights.evaair.com/zh-tw/航班-飛往-青森">長榮航空 青森航班</a>
-      <a href="https://zh-tw-46522.site-translation.com/">ReLabo Medical Spa &amp; Stay</a>
-      <a href="https://hoshinoresorts.com/zh_tw/hotels/oirasekeiryu/">星野 奧入瀨溪流飯店</a>
-      <a href="https://hoshinoresorts.com/zh_tw/hotels/oirasekeiryu/activities/15441/">星野：春雪山毛櫸林雪地鞋漫步</a>
-      <a href="https://hoshinoresorts.com/zh_tw/hotels/oirasekeiryu/activities/12986/">星野：奧入瀨溪流巴士觀光</a>
-      <a href="https://www.aomori-museum.jp/">青森縣立美術館</a>
-      <a href="https://rurubu.jp/andmore/spot/80001995">淺蟲水族館</a>
-      <a href="https://www.nap-camp.com/mag/92936">廣田神社</a>
-      <a href="https://jamesdiscover.tw/blog/8497">八甲田纜車攻略</a>
-      <a href="https://www.ikyu.com/00080339/">Hotel Route-Inn 弘前駅前</a>
-      <a href="https://www.navitime.co.jp/bus/diagram/timelist?departure=00025823&amp;arrival=00500993&amp;line=00081174">弘前巴士總站 → 青森機場 時刻表（NAVITIME）</a>
-    </div>
-  </section>
-  <div class="status" id="status">載入中…</div>
 </main>
-<footer>2027 青森之旅</footer>
+
+<footer>
+  <svg viewBox="0 0 160 70" aria-hidden="true"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round">
+    <rect x="10" y="20" width="120" height="32" rx="10" fill="#B9DAA5"/>
+    <rect x="22" y="28" width="18" height="12" rx="3" fill="#FFFCF6"/><rect x="48" y="28" width="18" height="12" rx="3" fill="#FFFCF6"/><rect x="74" y="28" width="18" height="12" rx="3" fill="#FFFCF6"/>
+    <path d="M130 26 Q150 30 150 44 L130 52 Z" fill="#F6D27A"/>
+    <circle class="float" cx="36" cy="56" r="7" fill="#fff"/><circle class="float2" cx="110" cy="56" r="7" fill="#fff"/>
+    <line x1="0" y1="64" x2="160" y2="64"/></g></svg>
+  一起去青森吧！
+</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script>if(!window.L){document.write('<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>');}</script>
 <script>
-// ===== 行程資料：在 GitHub 上直接修改這一段就能更新網站 =====
-const TRIP_DATA = {
- "days": [
-  {
-   "id": "d1",
-   "label": "3/6 六",
-   "title": "抵達 → 弘前",
-   "ord": 1
-  },
-  {
-   "id": "d2",
-   "label": "3/7 日",
-   "title": "弘前 → 奧入瀨",
-   "ord": 2
-  },
-  {
-   "id": "d3",
-   "label": "3/8 一",
-   "title": "奧入瀨整天",
-   "ord": 3
-  },
-  {
-   "id": "d4",
-   "label": "3/9 二",
-   "title": "奧入瀨 → 青森",
-   "ord": 4
-  },
-  {
-   "id": "d5",
-   "label": "3/10 三",
-   "title": "縣立美術館＋淺蟲水族館",
-   "ord": 5
-  },
-  {
-   "id": "d6",
-   "label": "3/11 四",
-   "title": "青森 → 返台 → 高鐵回家",
-   "ord": 6
-  },
-  {
-   "id": "d0",
-   "label": "3/5 四",
-   "title": "出發前一晚 → 桃園機場",
-   "ord": 0
-  }
- ],
- "items": [
-  {
-   "id": "d1-0",
-   "day": "d1",
-   "ord": 1,
-   "t": "14:20",
-   "title": "抵達青森機場（BR122）",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d1-1",
-   "day": "d1",
-   "ord": 2,
-   "t": "15:15",
-   "title": "搭弘南巴士到弘前站前（16:09 到）",
-   "note": "約 54 分，IC 約 ¥1,600，不收現金。備用：16:25 發、17:19 到",
-   "must": true
-  },
-  {
-   "id": "d1-2",
-   "day": "d1",
-   "ord": 3,
-   "t": "傍晚",
-   "title": "入住弘前飯店",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d1-3",
-   "day": "d1",
-   "ord": 4,
-   "t": "晚上",
-   "title": "津輕三味線現場演奏餐廳",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d3-0",
-   "day": "d3",
-   "ord": 1,
-   "t": "09:20–11:30",
-   "title": "春雪山毛櫸林雪地鞋漫步",
-   "note": "¥4,950，含裝備租借；7 歲以上、每團 8 人、日語導覽。前一天 18:00 後取消收全額。看不到樹冰",
-   "must": true
-  },
-  {
-   "id": "d3-1",
-   "day": "d3",
-   "ord": 2,
-   "t": "中午",
-   "title": "回飯店吃飯、休息",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d3-2",
-   "day": "d3",
-   "ord": 3,
-   "t": "14:00",
-   "title": "奧入瀨溪流巴士觀光",
-   "note": "約 50 分，馬門岩、石戶之瀨看冰柱。另有 12:50 場；太累可改 3/9 早上",
-   "must": true
-  },
-  {
-   "id": "d3-3",
-   "day": "d3",
-   "ord": 4,
-   "t": "",
-   "title": "泡溫泉；晚餐吃自備的食物",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d6-0",
-   "day": "d6",
-   "ord": 1,
-   "t": "上午",
-   "title": "退房、青森站周邊買伴手禮",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d6-1",
-   "day": "d6",
-   "ord": 2,
-   "t": "11:45",
-   "title": "青森站 11 號站牌搭 JR 巴士 → 12:20 到機場",
-   "note": "約 35 分。備用：12:30 發、13:05 到；最晚 12:40 發",
-   "must": true
-  },
-  {
-   "id": "d6-2",
-   "day": "d6",
-   "ord": 3,
-   "t": "",
-   "title": "機場午餐",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d6-3",
-   "day": "d6",
-   "ord": 4,
-   "t": "15:30",
-   "title": "搭 BR121 返台",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d5-0",
-   "day": "d5",
-   "ord": 1,
-   "t": "07:30",
-   "title": "古川市場「のっけ丼」",
-   "note": "青森魚菜中心，7:00 開門，飯賣完就提早結束",
-   "must": false
-  },
-  {
-   "id": "d5-1",
-   "day": "d5",
-   "ord": 2,
-   "t": "08:47",
-   "title": "青森站前 6 號站牌搭市營巴士 S51 → 09:09 縣立美術館前",
-   "note": "約 22 分、約 ¥280，可用 IC 卡。開館前可先看隔壁三內丸山遺跡",
-   "must": false
-  },
-  {
-   "id": "d5-2",
-   "day": "d5",
-   "ord": 3,
-   "t": "09:30–11:40",
-   "title": "青森縣立美術館",
-   "note": "奈良美智「あおもり犬」、夏卡爾〈阿列哥〉四幅全展、志賀理江子特展（展到 3/14）",
-   "must": true
-  },
-  {
-   "id": "d5-3",
-   "day": "d5",
-   "ord": 4,
-   "t": "11:46",
-   "title": "A1 巴士回青森站（12:09 到），車站附近吃午餐",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d5-4",
-   "day": "d5",
-   "ord": 5,
-   "t": "13:18",
-   "title": "青い森鐵道 青森 → 淺蟲溫泉（約 13:38 到）",
-   "note": "¥540，下車走路約 10 分到水族館",
-   "must": false
-  },
-  {
-   "id": "d5-5",
-   "day": "d5",
-   "ord": 6,
-   "t": "約 13:50–15:30",
-   "title": "淺蟲水族館",
-   "note": "9:00–17:00，¥1,200。海底隧道水槽、配津輕三味線的海豚表演（先查場次）",
-   "must": true
-  },
-  {
-   "id": "d5-6",
-   "day": "d5",
-   "ord": 7,
-   "t": "15:40",
-   "title": "「ゆ〜さ淺蟲」展望浴場",
-   "note": "看陸奧灣泡湯，¥360，淺蟲溫泉站走路 1 分",
-   "must": false
-  },
-  {
-   "id": "d5-7",
-   "day": "d5",
-   "ord": 8,
-   "t": "16:42",
-   "title": "青い森鐵道 淺蟲溫泉 → 青森（17:07 到）",
-   "note": "備用：17:35 發、18:00 到",
-   "must": false
-  },
-  {
-   "id": "d0-0",
-   "day": "d0",
-   "ord": 1,
-   "t": "",
-   "title": "搭高鐵到桃園站，轉到機場附近",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d0-1",
-   "day": "d0",
-   "ord": 2,
-   "t": "晚上",
-   "title": "入住桃園機場附近的膠囊旅館（已訂）",
-   "note": "隔天 BR122 09:55 起飛，建議 07:30 前到長榮櫃檯報到",
-   "must": false
-  },
-  {
-   "id": "d6-9",
-   "day": "d6",
-   "ord": 5,
-   "t": "19:00",
-   "title": "抵達桃園機場 → 機場捷運到高鐵桃園站 → 高鐵回家",
-   "note": "高鐵票建議訂 20:30 以後的車，或到了再買自由座，以防航班延誤",
-   "must": false
-  },
-  {
-   "id": "d2-0",
-   "day": "d2",
-   "ord": 1,
-   "t": "早上",
-   "title": "退房、行李寄放飯店",
-   "note": "",
-   "must": false
-  },
-  {
-   "id": "d2-1",
-   "day": "d2",
-   "ord": 2,
-   "t": "09:30–10:20",
-   "title": "弘前煉瓦倉庫美術館",
-   "note": "弘前市吉野町 2-1，9:30–17:00。蘋果酒工廠改建，有奈良美智作品和重現的小木屋咖啡廳；展覽「大正⇆令和アヴァンギャルド」展到 2027/5/16",
-   "must": true
-  },
-  {
-   "id": "d2-2",
-   "day": "d2",
-   "ord": 3,
-   "t": "約 10:30",
-   "title": "弘前城・弘前公園、舊弘前市立圖書館",
-   "note": "1906 年的紅圓頂八角雙塔洋館；附近還有前川國男設計的市役所、市民會館",
-   "must": false
-  },
-  {
-   "id": "d2-3",
-   "day": "d2",
-   "ord": 4,
-   "t": "約 11:15",
-   "title": "藤田紀念庭園・大正浪漫喫茶室（午餐）",
-   "note": "9:30–16:30（16:00 最後點餐）。蘋果派飲料套餐 ¥990；也有蕎麥可麗餅、弘前蘋果咖哩",
-   "must": true
-  },
-  {
-   "id": "d2-4",
-   "day": "d2",
-   "ord": 5,
-   "t": "12:24",
-   "title": "回弘前站拿行李 → JR 到青森（13:12）",
-   "note": "搭巴士或計程車回車站；來不及就搭 13:06（約 13:50 到）",
-   "must": false
-  },
-  {
-   "id": "d2-5",
-   "day": "d2",
-   "ord": 6,
-   "t": "",
-   "title": "🛒 在青森站附近買兩晚的晚餐（3/7、3/8）",
-   "note": "泡麵、飯糰、點心、飲料。奧入瀨附近沒有商店，要一次買齊",
-   "must": true
-  },
-  {
-   "id": "d2-6",
-   "day": "d2",
-   "ord": 7,
-   "t": "15:00",
-   "title": "星野接駁車（青森站西口廣場出發）",
-   "note": "車程約 150 分。付費、兩天前預約：大人單程 ¥4,000",
-   "must": true
-  },
-  {
-   "id": "d2-7",
-   "day": "d2",
-   "ord": 8,
-   "t": "約 17:30",
-   "title": "抵達星野，房間吃自備晚餐、泡溫泉",
-   "note": "有帶快煮壺",
-   "must": false
-  },
-  {
-   "id": "d4-0",
-   "day": "d4",
-   "ord": 1,
-   "t": "早上",
-   "title": "泡溫泉、吃早餐",
-   "note": "3/8 沒參加溪流巴士觀光的話，可報 7:00 或 8:10 場",
-   "must": false
-  },
-  {
-   "id": "d4-1",
-   "day": "d4",
-   "ord": 2,
-   "t": "10:30",
-   "title": "星野接駁車回青森站",
-   "note": "付費、須預約，大人單程 ¥4,000，約 12:30 到",
-   "must": true
-  },
-  {
-   "id": "d4-2",
-   "day": "d4",
-   "ord": 3,
-   "t": "中午",
-   "title": "ReLabo 寄放行李、午餐",
-   "note": "15:00 才能入住",
-   "must": false
-  },
-  {
-   "id": "d4-3",
-   "day": "d4",
-   "ord": 4,
-   "t": "下午",
-   "title": "廣田神社",
-   "note": "青森站走路約 15 分；手水舍裡有蘋果，還有睡魔造型繪馬",
-   "must": true
-  },
-  {
-   "id": "d4-4",
-   "day": "d4",
-   "ord": 5,
-   "t": "",
-   "title": "善知鳥神社",
-   "note": "青森市發祥地，順路",
-   "must": false
-  },
-  {
-   "id": "d4-5",
-   "day": "d4",
-   "ord": 6,
-   "t": "傍晚",
-   "title": "港邊散步：AOMORI 地標、八甲田丸、青森灣大橋",
-   "note": "地標在青森站旁的 A-BEACH",
-   "must": false
-  },
-  {
-   "id": "d4-6",
-   "day": "d4",
-   "ord": 7,
-   "t": "",
-   "title": "A-Factory、睡魔之家 Wa Rasse",
-   "note": "A-Factory 二樓可買試飲卡品嘗蘋果酒",
-   "must": false
-  },
-  {
-   "id": "d4-7",
-   "day": "d4",
-   "ord": 8,
-   "t": "18:15",
-   "title": "晚餐：大福丸（居酒屋）",
-   "note": "青森市安方 1-2-11，青森站走路 3–5 分。16:30–21:30；每晚 18:35、19:45 有津輕三味線現場演奏，可以自己釣扇貝。建議先訂位",
-   "must": true
-  }
- ],
- "stays": [
-  {
-   "id": "s0",
-   "ord": 0,
-   "dates": "3/5",
-   "name": "桃園機場附近的膠囊旅館",
-   "status": "已訂",
-   "note": "出發前一晚"
-  },
-  {
-   "id": "s1",
-   "ord": 1,
-   "dates": "3/6",
-   "name": "Art Hotel 弘前 City（標準三人房）",
-   "status": "已訂",
-   "note": "22㎡、3 張單人床，弘前站走路 1 分鐘；入住 14:00、退房 11:00"
-  },
-  {
-   "id": "s2",
-   "ord": 2,
-   "dates": "3/7、3/8",
-   "name": "星野 奧入瀨溪流飯店",
-   "status": "已決定，待訂（官網）",
-   "note": "一泊一食（含早餐自助餐 6:30–10:00），晚餐自備；預付，入住前 3 天內取消收全額。青森站接駁車約 150 分"
-  },
-  {
-   "id": "s3",
-   "ord": 3,
-   "dates": "3/9、3/10",
-   "name": "ReLabo Medical Spa & Stay",
-   "status": "已訂",
-   "note": "雙人房 1 間＋單人房 1 間（不含早餐）。與青森站相連，有大浴場"
-  }
- ],
- "todos": [
-  {
-   "id": "t1",
-   "ord": 1,
-   "done": false,
-   "text": "向星野確認 3 月有沒有八甲田樹冰團"
-  },
-  {
-   "id": "t2",
-   "ord": 2,
-   "done": true,
-   "text": "訂機票（BR122 / BR121）已完成"
-  },
-  {
-   "id": "t3",
-   "ord": 3,
-   "done": true,
-   "text": "ReLabo 2 晚（3/9、3/10）：雙人房＋單人房，已完成"
-  },
-  {
-   "id": "t4",
-   "ord": 4,
-   "done": false,
-   "text": "星野官網訂 2 晚（3/7、3/8）一泊一食"
-  },
-  {
-   "id": "t5",
-   "ord": 5,
-   "done": true,
-   "text": "預訂弘前 Art Hotel 弘前 City 標準三人房（3/6）已完成"
-  },
-  {
-   "id": "t6",
-   "ord": 6,
-   "done": false,
-   "text": "預約星野接駁車：3/7 15:00 青森站西口出發、3/9 10:30 飯店出發（3 人來回共 ¥24,000）"
-  },
-  {
-   "id": "t7",
-   "ord": 7,
-   "done": false,
-   "text": "報名雪地鞋漫步和溪流巴士觀光"
-  },
-  {
-   "id": "t8",
-   "ord": 8,
-   "done": false,
-   "text": "每人準備 IC 卡"
-  },
-  {
-   "id": "t9",
-   "ord": 9,
-   "done": false,
-   "text": "查機場→弘前、青森站→機場巴士時刻"
-  },
-  {
-   "id": "t10",
-   "ord": 10,
-   "done": false,
-   "text": "確認美術館 3/10 有開館"
-  },
-  {
-   "id": "t20",
-   "ord": 20,
-   "done": false,
-   "text": "3/7 買兩晚晚餐（泡麵等）；帶快煮壺、餐具"
-  }
- ],
- "ideas": [
-  {
-   "id": "i1",
-   "ord": 1,
-   "text": "樹冰方案 A：住星野時跟飯店樹冰團去，排 3/8（要等飯店公布）"
-  },
-  {
-   "id": "i2",
-   "ord": 2,
-   "text": "樹冰方案 B：3/10 從青森站搭 JR 巴士去八甲田纜車＋酸湯溫泉；美術館和水族館改到 3/9 下午或 3/11 上午擇一"
-  }
- ]
-};
-// ===== 行程資料結束 =====
-// ===== 地圖地點：day 對應上面的 d1–d6，"idea" 是備選 =====
+// ===== 行程資料：直接在 GitHub 上修改這一段就能更新網站 =====
+const TRIP = {"days": [{"id": "d1", "label": "3/6 六", "title": "抵達 → 弘前", "ord": 1}, {"id": "d2", "label": "3/7 日", "title": "弘前 → 奧入瀨", "ord": 2}, {"id": "d3", "label": "3/8 一", "title": "奧入瀨整天", "ord": 3}, {"id": "d4", "label": "3/9 二", "title": "奧入瀨 → 青森", "ord": 4}, {"id": "d5", "label": "3/10 三", "title": "縣立美術館＋淺蟲水族館", "ord": 5}, {"id": "d6", "label": "3/11 四", "title": "青森 → 返台 → 高鐵回家", "ord": 6}, {"id": "d0", "label": "3/5 四", "title": "出發前一晚 → 桃園機場", "ord": 0}], "items": [{"id": "d1-0", "day": "d1", "ord": 1, "t": "14:20", "title": "抵達青森機場（BR122）", "note": "", "must": false, "modes": ["飛機"]}, {"id": "d1-1", "day": "d1", "ord": 2, "t": "15:15", "title": "搭弘南巴士到弘前站前（16:09 到）", "note": "約 54 分，IC 約 ¥1,600，不收現金。備用：16:25 發、17:19 到", "must": true, "modes": ["巴士"]}, {"id": "d1-2", "day": "d1", "ord": 3, "t": "傍晚", "title": "入住弘前飯店", "note": "", "must": false, "modes": ["步行"]}, {"id": "d1-3", "day": "d1", "ord": 4, "t": "晚上", "title": "津輕三味線現場演奏餐廳", "note": "", "must": false, "modes": []}, {"id": "d3-0", "day": "d3", "ord": 1, "t": "09:20–11:30", "title": "春雪山毛櫸林雪地鞋漫步", "note": "¥4,950，含裝備租借；7 歲以上、每團 8 人、日語導覽。前一天 18:00 後取消收全額。看不到樹冰", "must": true, "modes": ["導覽"]}, {"id": "d3-1", "day": "d3", "ord": 2, "t": "中午", "title": "回飯店吃飯、休息", "note": "", "must": false, "modes": []}, {"id": "d3-2", "day": "d3", "ord": 3, "t": "14:00", "title": "奧入瀨溪流巴士觀光", "note": "約 50 分，馬門岩、石戶之瀨看冰柱。另有 12:50 場；太累可改 3/9 早上", "must": true, "modes": ["巴士"]}, {"id": "d3-3", "day": "d3", "ord": 4, "t": "", "title": "泡溫泉；晚餐吃自備的食物", "note": "", "must": false, "modes": []}, {"id": "d6-0", "day": "d6", "ord": 1, "t": "上午", "title": "退房、青森站周邊買伴手禮", "note": "", "must": false, "modes": []}, {"id": "d6-1", "day": "d6", "ord": 2, "t": "11:45", "title": "青森站 11 號站牌搭 JR 巴士 → 12:20 到機場", "note": "約 35 分。備用：12:30 發、13:05 到；最晚 12:40 發", "must": true, "modes": ["巴士"]}, {"id": "d6-2", "day": "d6", "ord": 3, "t": "", "title": "機場午餐", "note": "", "must": false, "modes": []}, {"id": "d6-3", "day": "d6", "ord": 4, "t": "15:30", "title": "搭 BR121 返台", "note": "", "must": false, "modes": ["飛機"]}, {"id": "d5-0", "day": "d5", "ord": 1, "t": "07:30", "title": "古川市場「のっけ丼」", "note": "青森魚菜中心，7:00 開門，飯賣完就提早結束", "must": false, "modes": ["步行"]}, {"id": "d5-1", "day": "d5", "ord": 2, "t": "08:47", "title": "青森站前 6 號站牌搭市營巴士 S51 → 09:09 縣立美術館前", "note": "約 22 分、約 ¥280，可用 IC 卡。開館前可先看隔壁三內丸山遺跡", "must": false, "modes": ["巴士"]}, {"id": "d5-2", "day": "d5", "ord": 3, "t": "09:30–11:40", "title": "青森縣立美術館", "note": "奈良美智「あおもり犬」、夏卡爾〈阿列哥〉四幅全展、志賀理江子特展（展到 3/14）", "must": true, "modes": []}, {"id": "d5-3", "day": "d5", "ord": 4, "t": "11:46", "title": "A1 巴士回青森站（12:09 到），車站附近吃午餐", "note": "", "must": false, "modes": ["巴士"]}, {"id": "d5-4", "day": "d5", "ord": 5, "t": "13:18", "title": "青い森鐵道 青森 → 淺蟲溫泉（約 13:38 到）", "note": "¥540，下車走路約 10 分到水族館", "must": false, "modes": ["鐵道"]}, {"id": "d5-5", "day": "d5", "ord": 6, "t": "約 13:50–15:30", "title": "淺蟲水族館", "note": "9:00–17:00，¥1,200。海底隧道水槽、配津輕三味線的海豚表演（先查場次）", "must": true, "modes": ["步行"]}, {"id": "d5-6", "day": "d5", "ord": 7, "t": "15:40", "title": "「ゆ〜さ淺蟲」展望浴場", "note": "看陸奧灣泡湯，¥360，淺蟲溫泉站走路 1 分", "must": false, "modes": ["步行"]}, {"id": "d5-7", "day": "d5", "ord": 8, "t": "16:42", "title": "青い森鐵道 淺蟲溫泉 → 青森（17:07 到）", "note": "備用：17:35 發、18:00 到", "must": false, "modes": ["鐵道"]}, {"id": "d0-0", "day": "d0", "ord": 1, "t": "", "title": "高鐵到桃園站 → 機場捷運到 A13 機場第二航廈", "note": "捷運約 20 分", "must": false, "modes": ["高鐵", "捷運"]}, {"id": "d0-1", "day": "d0", "ord": 2, "t": "16:00 後", "title": "入住 CHO Stay 膠囊旅館（第二航廈 5 樓，已訂）", "note": "長榮在第二航廈，隔天走下樓就能報到。BR122 09:55 起飛，建議 07:30 前到長榮櫃檯", "must": false, "modes": []}, {"id": "d6-9", "day": "d6", "ord": 5, "t": "19:00", "title": "抵達桃園機場 → 機場捷運到高鐵桃園站 → 高鐵回家", "note": "高鐵票建議訂 20:30 以後的車，或到了再買自由座，以防航班延誤", "must": false, "modes": ["捷運", "高鐵"]}, {"id": "d2-0", "day": "d2", "ord": 1, "t": "早上", "title": "退房、行李寄放飯店", "note": "", "must": false, "modes": []}, {"id": "d2-1", "day": "d2", "ord": 2, "t": "09:30–10:20", "title": "弘前煉瓦倉庫美術館", "note": "弘前市吉野町 2-1，9:30–17:00。蘋果酒工廠改建，有奈良美智作品和重現的小木屋咖啡廳；展覽「大正⇆令和アヴァンギャルド」展到 2027/5/16", "must": true, "modes": ["步行"]}, {"id": "d2-2", "day": "d2", "ord": 3, "t": "約 10:30", "title": "弘前城・弘前公園、舊弘前市立圖書館", "note": "1906 年的紅圓頂八角雙塔洋館；附近還有前川國男設計的市役所、市民會館", "must": false, "modes": ["步行"]}, {"id": "d2-3", "day": "d2", "ord": 4, "t": "約 11:15", "title": "藤田紀念庭園・大正浪漫喫茶室（午餐）", "note": "9:30–16:30（16:00 最後點餐）。蘋果派飲料套餐 ¥990；也有蕎麥可麗餅、弘前蘋果咖哩", "must": true, "modes": ["步行"]}, {"id": "d2-4", "day": "d2", "ord": 5, "t": "12:24", "title": "回弘前站拿行李 → JR 到青森（13:12）", "note": "搭巴士或計程車回車站；來不及就搭 13:06（約 13:50 到）", "must": false, "modes": ["巴士", "JR"]}, {"id": "d2-5", "day": "d2", "ord": 6, "t": "", "title": "🛒 在青森站附近買兩晚的晚餐（3/7、3/8）", "note": "泡麵、飯糰、點心、飲料。奧入瀨附近沒有商店，要一次買齊", "must": true, "modes": []}, {"id": "d2-6", "day": "d2", "ord": 7, "t": "15:00", "title": "星野接駁車（青森站西口廣場出發）", "note": "車程約 150 分。付費、兩天前預約：大人單程 ¥4,000", "must": true, "modes": ["接駁車"]}, {"id": "d2-7", "day": "d2", "ord": 8, "t": "約 17:30", "title": "抵達星野，房間吃自備晚餐、泡溫泉", "note": "有帶快煮壺", "must": false, "modes": []}, {"id": "d4-0", "day": "d4", "ord": 1, "t": "早上", "title": "泡溫泉、吃早餐", "note": "3/8 沒參加溪流巴士觀光的話，可報 7:00 或 8:10 場", "must": false, "modes": []}, {"id": "d4-1", "day": "d4", "ord": 2, "t": "10:30", "title": "星野接駁車回青森站", "note": "付費、須預約，大人單程 ¥4,000，約 12:30 到", "must": true, "modes": ["接駁車"]}, {"id": "d4-2", "day": "d4", "ord": 3, "t": "中午", "title": "ReLabo 寄放行李、午餐", "note": "15:00 才能入住", "must": false, "modes": []}, {"id": "d4-3", "day": "d4", "ord": 4, "t": "下午", "title": "廣田神社", "note": "青森站走路約 15 分；手水舍裡有蘋果，還有睡魔造型繪馬", "must": true, "modes": ["步行"]}, {"id": "d4-4", "day": "d4", "ord": 5, "t": "", "title": "善知鳥神社", "note": "青森市發祥地，順路", "must": false, "modes": ["步行"]}, {"id": "d4-5", "day": "d4", "ord": 6, "t": "傍晚", "title": "港邊散步：AOMORI 地標、八甲田丸、青森灣大橋", "note": "地標在青森站旁的 A-BEACH", "must": false, "modes": ["步行"]}, {"id": "d4-6", "day": "d4", "ord": 7, "t": "", "title": "A-Factory、睡魔之家 Wa Rasse", "note": "A-Factory 二樓可買試飲卡品嘗蘋果酒", "must": false, "modes": ["步行"]}, {"id": "d4-7", "day": "d4", "ord": 8, "t": "18:15", "title": "晚餐：大福丸（居酒屋）", "note": "青森市安方 1-2-11，青森站走路 3–5 分。16:30–21:30；每晚 18:35、19:45 有津輕三味線現場演奏，可以自己釣扇貝。建議先訂位", "must": true, "modes": ["步行"]}], "stays": [{"id": "s0", "ord": 0, "dates": "3/5", "name": "町·草休行館 CHO Stay Capsule Hotel（桃園機場第二航廈內）", "status": "已訂", "note": "桃園市大園區航站南路 9 號 5 樓南側。到第二航廈 3 樓出境大廳，找南側 22 號報到櫃檯旁的手扶梯上 5 樓。入住 16:00 後、退房 10:00 前；共用衛浴，房內不能吃東西"}, {"id": "s1", "ord": 1, "dates": "3/6", "name": "Art Hotel 弘前 City（標準三人房）", "status": "已訂", "note": "22㎡、3 張單人床，弘前站走路 1 分鐘；入住 14:00、退房 11:00"}, {"id": "s2", "ord": 2, "dates": "3/7、3/8", "name": "星野 奧入瀨溪流飯店", "status": "已決定，待訂（官網）", "note": "一泊一食（含早餐自助餐 6:30–10:00），晚餐自備；預付，入住前 3 天內取消收全額。青森站接駁車約 150 分"}, {"id": "s3", "ord": 3, "dates": "3/9、3/10", "name": "ReLabo Medical Spa & Stay", "status": "已訂", "note": "雙人房 1 間＋單人房 1 間（不含早餐）。與青森站相連，有大浴場"}], "todos": [{"id": "t1", "ord": 1, "done": false, "text": "向星野確認 3 月有沒有八甲田樹冰團"}, {"id": "t2", "ord": 2, "done": true, "text": "訂機票（BR122 / BR121）已完成"}, {"id": "t3", "ord": 3, "done": true, "text": "ReLabo 2 晚（3/9、3/10）：雙人房＋單人房，已完成"}, {"id": "t4", "ord": 4, "done": false, "text": "星野官網訂 2 晚（3/7、3/8）一泊一食"}, {"id": "t5", "ord": 5, "done": true, "text": "預訂弘前 Art Hotel 弘前 City 標準三人房（3/6）已完成"}, {"id": "t6", "ord": 6, "done": false, "text": "預約星野接駁車：3/7 15:00 青森站西口出發、3/9 10:30 飯店出發（3 人來回共 ¥24,000）"}, {"id": "t7", "ord": 7, "done": false, "text": "報名雪地鞋漫步和溪流巴士觀光"}, {"id": "t8", "ord": 8, "done": false, "text": "每人準備 IC 卡"}, {"id": "t9", "ord": 9, "done": false, "text": "查機場→弘前、青森站→機場巴士時刻"}, {"id": "t10", "ord": 10, "done": false, "text": "確認美術館 3/10 有開館"}, {"id": "t20", "ord": 20, "done": false, "text": "3/7 買兩晚晚餐（泡麵等）；帶快煮壺、餐具"}], "ideas": [{"id": "i1", "ord": 1, "text": "樹冰方案 A：住星野時跟飯店樹冰團去，排 3/8（要等飯店公布）"}, {"id": "i2", "ord": 2, "text": "樹冰方案 B：3/10 從青森站搭 JR 巴士去八甲田纜車＋酸湯溫泉；美術館和水族館改到 3/9 下午或 3/11 上午擇一"}]};
 const MAP_PLACES = [
  {day:"d1", name:"青森機場", lat:40.735302, lng:140.690491, q:"青森空港"},
  {day:"d1", name:"弘前站", lat:40.599669, lng:140.485189, q:"弘前駅"},
@@ -796,300 +418,214 @@ const MAP_PLACES = [
  {day:"idea", name:"八甲田纜車（樹冰）", lat:40.679289, lng:140.842825, q:"八甲田ロープウェー"},
  {day:"idea", name:"酸湯溫泉", lat:40.649914, lng:140.852099, q:"酸ヶ湯温泉"}
 ];
-// ===== 地圖地點結束 =====
+const SPLIT = {
+  members: ["我","學姊","學姊的姊姊"],
+  expenses: [
+    {item:"弘前飯店 Art Hotel 弘前 City（3/6）", amt:3056, cur:"TWD", payer:0, among:[0,1,2]},
+    {item:"桃園機場膠囊旅館（3/5）", amt:5850, cur:"TWD", payer:1, among:[0,1,2]}
+  ]
+};
+const PREP = [
+  ["護照效期確認（回國時還有 6 個月以上最保險）",""],["填寫 Visit Japan Web（入境、海關）",""],["買旅平險／確認信用卡海外保險",""],
+  ["換日圓現金（有些地方只收現金）",""],["準備交通系 IC 卡（Suica 等），手機或實體卡都可以，先儲值",""],
+  ["日本網卡或 eSIM",""],["星野接駁車兩趟都預約好（搭車兩天前截止）",""],["報名雪地鞋漫步、溪流巴士觀光（前一天 18:00 前）",""],
+  ["大福丸訂位（3/9 晚上）",""],["查最新的機場巴士、JR、青い森鐵道時刻",""],["高鐵票：3/5 上台北、3/11 回程（20:30 以後的車）",""],
+  ["下載離線地圖、截圖重要訂房資料",""]
+];
+const PACK = {
+  "證件・錢": ["護照","機票／訂房資料（截圖）","日圓現金、信用卡","IC 卡","台灣的健保卡、身分證"],
+  "保暖衣物": ["發熱衣褲 ×3","毛衣或刷毛衣","防風防水外套／羽絨外套","防滑雪靴（或鞋底冰爪）","毛帽、手套、圍巾","厚襪子","暖暖包"],
+  "生活用品": ["快煮壺（奧入瀨兩晚晚餐用）","筷子、湯匙、環保碗","保濕乳液、護唇膏","常備藥品","牙刷、隱形眼鏡用品"],
+  "電子產品": ["手機、充電器","行動電源（放隨身行李）","耳機","網卡／eSIM"],
+  "其他": ["購物袋（裝伴手禮、採買晚餐）","小毛巾","雨傘或雪傘","一個空行李箱的空間 🍎"]
+};
+// ===== 行程資料結束 =====
 
-</script>
-<script>
 (function(){
-  if (matchMedia('(hover: none)').matches) document.documentElement.classList.add('touch');
+const $=s=>document.querySelector(s);
+const h=(tag,attrs,...kids)=>{const e=document.createElement(tag);if(attrs)for(const k in attrs){const v=attrs[k];if(k==="class")e.className=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2),v);else if(v!==false&&v!=null)e.setAttribute(k,v===true?"":v);}for(const c of kids.flat())if(c!=null&&c!==false)e.append(c.nodeType?c:String(c));return e;};
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // countdown
-  (function(){
-    const el = document.getElementById('countdown');
-    const dep = new Date('2027-03-06T09:55:00+08:00');
-    const days = Math.ceil((dep - new Date()) / 86400000);
-    el.textContent = days > 0 ? '距離出發還有 ' + days + ' 天' : (days > -6 ? '旅途中，玩得開心！' : '旅程已結束');
-  })();
+// countdown
+(function(){const dep=new Date("2027-03-06T09:55:00+08:00"),d=Math.ceil((dep-new Date())/864e5);
+  $("#count").innerHTML=d>0?"距離出發還有 <b>"+d+"</b> 天":(d>-6?"旅途中，玩得開心！":"旅程結束，下次見 🍎");})();
 
-  const S = { days: [], items: [], todos: [], ideas: [], stays: [] };
-  const loaded = {};
-  let db = null, canWrite = true;
-  const editing = { id: null, newDay: null, confirm: null };
+// day art
+const ART={
+  plane:'<svg viewBox="0 0 56 56"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"><circle cx="28" cy="28" r="25" fill="#A8D3E6"/><path d="M12 30 L40 26 Q48 26 48 30 Q48 34 40 34 L12 34 Z" fill="#fff"/><path d="M24 29 L32 16 L37 16 L33 30Z M26 34 L33 44 L38 44 L34 33Z" fill="#F6D27A"/></g></svg>',
+  castle:'<svg viewBox="0 0 56 56"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"><circle cx="28" cy="28" r="25" fill="#FCF1D2"/><rect x="16" y="32" width="24" height="12" fill="#fff"/><path d="M12 33 L44 33 L40 26 L16 26Z" fill="#fff"/><rect x="21" y="18" width="14" height="9" fill="#fff"/><path d="M18 19 L38 19 L34 12 L22 12Z" fill="#fff"/><rect x="25" y="36" width="6" height="8" fill="#F2A497"/></g></svg>',
+  stream:'<svg viewBox="0 0 56 56"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"><circle cx="28" cy="28" r="25" fill="#E7F2E0"/><path d="M8 34 Q18 28 28 34 T48 34" fill="none"/><path d="M8 42 Q18 36 28 42 T48 42" fill="none" stroke="#A8D3E6"/><path d="M14 28 L22 12 L30 28Z" fill="#B9DAA5"/><path d="M30 28 L37 16 L44 28Z" fill="#B9DAA5"/><path d="M19 18 L22 12 L25 18Z" fill="#fff"/></g></svg>',
+  nebuta:'<svg viewBox="0 0 56 56"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"><circle cx="28" cy="28" r="25" fill="#FBE3DE"/><rect x="16" y="14" width="24" height="28" rx="8" fill="#F2A497"/><rect x="19" y="11" width="18" height="5" rx="2" fill="#F6D27A"/><rect x="19" y="40" width="18" height="5" rx="2" fill="#F6D27A"/><circle cx="24" cy="26" r="2" fill="#3E3A39" stroke="none"/><circle cx="32" cy="26" r="2" fill="#3E3A39" stroke="none"/><path d="M23 33 Q28 37 33 33" fill="none"/></g></svg>',
+  fish:'<svg viewBox="0 0 56 56"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"><circle cx="28" cy="28" r="25" fill="#E4F1F7"/><path d="M12 28 Q22 16 36 22 L46 16 L44 28 L46 40 L36 34 Q22 40 12 28Z" fill="#A8D3E6"/><circle cx="20" cy="27" r="2.5" fill="#3E3A39" stroke="none"/></g></svg>',
+  apple:'<svg viewBox="0 0 56 56"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"><circle cx="28" cy="28" r="25" fill="#FCF1D2"/><path d="M28 20 C18 14 10 24 14 34 C18 42 25 44 28 40 C31 44 38 42 42 34 C46 24 38 14 28 20Z" fill="#F2A497"/><path d="M28 20 Q29 14 33 11" fill="none"/><path d="M30 16 Q37 10 41 15 Q35 19 30 16Z" fill="#B9DAA5"/></g></svg>',
+  train:'<svg viewBox="0 0 56 56"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"><circle cx="28" cy="28" r="25" fill="#E7F2E0"/><rect x="14" y="16" width="28" height="22" rx="7" fill="#fff"/><rect x="18" y="20" width="20" height="8" rx="2" fill="#A8D3E6"/><circle cx="21" cy="33" r="2" fill="#3E3A39" stroke="none"/><circle cx="35" cy="33" r="2" fill="#3E3A39" stroke="none"/><path d="M18 38 L14 44 M38 38 L42 44"/></g></svg>'
+};
+const DAY_ART={d0:"train",d1:"plane",d2:"castle",d3:"stream",d4:"nebuta",d5:"fish",d6:"apple"};
 
-  const $ = (s, r=document) => r.querySelector(s);
-  function h(tag, attrs, ...kids){
-    const e = document.createElement(tag);
-    if (attrs) for (const k in attrs){
-      const v = attrs[k];
-      if (k === 'class') e.className = v;
-      else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
-      else if (v !== null && v !== undefined && v !== false) e.setAttribute(k, v === true ? '' : v);
+const days=[...TRIP.days].sort((a,b)=>a.ord-b.ord);
+let cur=store.get("ehon-day",null);
+if(!days.find(d=>d.id===cur)){
+  const today=new Date(), m=today.getMonth()+1, dd=today.getDate();
+  const hit=days.find(d=>d.label.startsWith(m+"/"+dd+" "));
+  cur=hit?hit.id:days[0].id;
+}
+function renderTabs(){
+  const box=$("#daytabs"); box.textContent="";
+  for(const d of days){
+    const [date,w]=d.label.split(" ");
+    box.append(h("button",{class:"daytab",role:"tab","aria-selected":d.id===cur?"true":"false",onclick:()=>{cur=d.id;store.set("ehon-day",cur);renderTabs();renderDay(true);}},
+      h("span",{class:"d"},date),h("span",{class:"w"},"（"+w+"）")));
+  }
+}
+function renderDay(anim){
+  const d=days.find(x=>x.id===cur), p=$("#daypanel"); p.textContent="";
+  const head=h("div",{class:"dayhead"}); const art=h("div",{class:"dayart float"}); art.innerHTML=ART[DAY_ART[d.id]]||ART.apple;
+  head.append(art,h("div",null,h("div",{class:"big"},d.label.replace(" ","（")+"）"),h("div",{class:"ttl"},d.title)));
+  const ul=h("ol",{class:"tl"});
+  for(const it of TRIP.items.filter(i=>i.day===d.id).sort((a,b)=>a.ord-b.ord)){
+    const tags=h("div",{class:"tags"});
+    if(it.must) tags.append(h("span",{class:"tag must"},"★ 必去"));
+    for(const m of it.modes||[]) tags.append(h("span",{class:"tag m-"+m},m));
+    ul.append(h("li",{class:it.must?"must":""},
+      it.t?h("div",{class:"time"},it.t):null, h("div",{class:"t"},it.title),
+      it.note?h("div",{class:"n"},it.note):null, tags.childNodes.length?tags:null));
+  }
+  p.append(head,ul);
+  if(anim&&!reduce){p.classList.remove("bounce");void p.offsetWidth;p.classList.add("bounce");}
+}
+renderTabs(); renderDay(false);
+
+// stays
+(function(){const box=$("#staylist");
+  for(const s of [...TRIP.stays].sort((a,b)=>a.ord-b.ord)){
+    const ok=/^已訂/.test(s.status);
+    box.append(h("div",{class:"stay"},h("div",{class:"when"},s.dates),
+      h("div",null,h("div",null,h("span",{class:"name"},s.name),h("span",{class:"st"+(ok?"":" wait")},s.status)),h("div",{class:"note"},s.note||""))));
+  }})();
+
+// checklists
+function checklist(key,items,listEl,barEl){
+  const state=store.get(key,{});
+  const update=()=>{const n=items.length,d=items.filter(i=>state[i.id]).length;barEl.style.width=(n?d/n*100:0)+"%";};
+  for(const it of items){
+    const id=key+"-"+it.id;
+    const cb=h("input",{type:"checkbox",id,checked:!!state[it.id]});
+    const li=h("li",{class:state[it.id]?"done":""},cb,h("label",{for:id},it.text));
+    cb.addEventListener("change",()=>{state[it.id]=cb.checked;li.classList.toggle("done",cb.checked);store.set(key,state);update();});
+    listEl.append(li);
+  }
+  update(); return {state,update};
+}
+// todo: default checked from data
+(function(){
+  const key="ehon-todo"; const st=store.get(key,null);
+  if(!st){const init={};for(const t of TRIP.todos) if(t.done) init[t.id]=true; store.set(key,init);}
+  checklist(key,[...TRIP.todos].sort((a,b)=>a.ord-b.ord).map(t=>({id:t.id,text:t.text})),$("#todo-list"),$("#todo-bar"));
+})();
+checklist("ehon-prep",PREP.map((p,i)=>({id:"p"+i,text:p[0]})),$("#prep-list"),$("#prep-bar"));
+(function(){
+  const box=$("#pack-groups"), all=[]; const colors=["var(--coral)","var(--mizu)","var(--wakatake)","var(--yama)","var(--coral-l)"];
+  const key="ehon-pack"; const state=store.get(key,{}); const bar=$("#pack-bar");
+  const update=()=>{bar.style.width=(all.length?all.filter(i=>state[i]).length/all.length*100:0)+"%";};
+  Object.entries(PACK).forEach(([g,items],gi)=>{
+    const ul=h("ul",{class:"check"});
+    items.forEach((t,i)=>{const id="k"+gi+"-"+i; all.push(id);
+      const cb=h("input",{type:"checkbox",id:"pk-"+id,checked:!!state[id]}); const li=h("li",{class:state[id]?"done":""},cb,h("label",{for:"pk-"+id},t));
+      cb.addEventListener("change",()=>{state[id]=cb.checked;li.classList.toggle("done",cb.checked);store.set(key,state);update();}); ul.append(li);});
+    box.append(h("div",{class:"group"},h("h3",null,h("span",{style:"background:"+colors[gi%colors.length]}),g),ul));
+  }); update();
+})();
+
+
+// split
+(function(){
+  const names=store.get("ehon-names",null)||SPLIT.members.slice();
+  let local=store.get("ehon-exp",[]);
+  const all=()=>SPLIT.expenses.map(e=>({...e,shared:true})).concat(local);
+  const fmt=(n,c)=>(c==="JPY"?"¥":"NT$")+Math.round(n).toLocaleString();
+  function renderMembers(){
+    const box=$("#members"); box.textContent="";
+    names.forEach((n,i)=>{const inp=h("input",{type:"text",value:n,maxlength:12,"aria-label":"成員 "+(i+1)});
+      inp.addEventListener("change",()=>{names[i]=inp.value.trim()||SPLIT.members[i];store.set("ehon-names",names);renderAll();}); box.append(inp);});
+    const payer=$("#payer"); payer.textContent=""; names.forEach((n,i)=>payer.append(h("option",{value:i},n)));
+    const among=$("#among"); among.querySelectorAll("label").forEach(l=>l.remove());
+    names.forEach((n,i)=>among.append(h("label",{class:"ck"},h("input",{type:"checkbox",name:"m",value:i,checked:true}),n)));
+  }
+  function renderList(){
+    const ul=$("#explist"); ul.textContent="";
+    if(!all().length) ul.append(h("li",{class:"note"},"還沒有帳"));
+    all().forEach((e,idx)=>{
+      const who=names[e.payer]+" 付・"+e.among.map(i=>names[i]).join("、")+" 分";
+      ul.append(h("li",null,h("div",null,h("div",null,e.item,e.shared?h("span",{class:"badge"},"共用"):null),h("div",{class:"who"},who)),
+        h("div",{class:"amt"},fmt(e.amt,e.cur),h("div",{class:"who"},"每人 "+fmt(e.amt/e.among.length,e.cur))),
+        e.shared?null:h("button",{class:"x",type:"button",title:"刪除",onclick:()=>{local.splice(idx-SPLIT.expenses.length,1);store.set("ehon-exp",local);renderAll();}},"✕")));
+    });
+  }
+  let lines=[];
+  function renderBal(){
+    const box=$("#balances"); box.textContent=""; lines=[];
+    for(const cur of ["TWD","JPY"]){
+      const ex=all().filter(e=>e.cur===cur); if(!ex.length) continue;
+      const paid=names.map(()=>0), share=names.map(()=>0);
+      ex.forEach(e=>{paid[e.payer]+=e.amt; e.among.forEach(i=>share[i]+=e.amt/e.among.length);});
+      const bal=names.map((_,i)=>paid[i]-share[i]);
+      const tb=h("table",{class:"bal"},h("thead",null,h("tr",null,h("th",null,cur==="JPY"?"日圓":"台幣"),h("th",null,"付了"),h("th",null,"應付"),h("th",null,"差額"))));
+      const body=h("tbody"); names.forEach((n,i)=>{const b=Math.round(bal[i]);
+        body.append(h("tr",null,h("td",null,n),h("td",null,fmt(paid[i],cur)),h("td",null,fmt(share[i],cur)),h("td",{class:b>0?"pos":b<0?"neg":""},(b>0?"+":"")+Math.round(b).toLocaleString())));});
+      tb.append(body); box.append(tb);
+      // settle: greedy
+      const cr=[],db=[]; bal.forEach((b,i)=>{const r=Math.round(b); if(r>0)cr.push([i,r]); else if(r<0)db.push([i,-r]);});
+      cr.sort((a,b)=>b[1]-a[1]); db.sort((a,b)=>b[1]-a[1]);
+      const ul=h("ul",{class:"settle"}); let i=0,j=0;
+      while(i<db.length&&j<cr.length){const x=Math.min(db[i][1],cr[j][1]);
+        if(x>0){const s=names[db[i][0]]+" → "+names[cr[j][0]]+" "+fmt(x,cur); ul.append(h("li",null,s)); lines.push(s);}
+        db[i][1]-=x; cr[j][1]-=x; if(db[i][1]<=0)i++; if(cr[j][1]<=0)j++;}
+      if(!ul.childNodes.length) ul.append(h("li",null,"已經結清 🎉"));
+      box.append(h("div",{class:"note",style:"margin-top:8px"},"要這樣轉帳（"+(cur==="JPY"?"日圓":"台幣")+"）："),ul);
     }
-    for (const k of kids.flat()) if (k !== null && k !== undefined && k !== false) e.append(k.nodeType ? k : String(k));
-    return e;
   }
-  const byOrd = (a,b) => (a.ord ?? 0) - (b.ord ?? 0) || String(a.id).localeCompare(String(b.id));
-  const maxOrd = arr => arr.reduce((m,x)=>Math.max(m, x.ord ?? 0), 0);
+  function renderAll(){renderMembers();renderList();renderBal();}
+  $("#addexp").addEventListener("submit",ev=>{ev.preventDefault();const f=ev.target;
+    const among=[...f.querySelectorAll('input[name=m]:checked')].map(x=>+x.value); if(!among.length){return;}
+    local.push({item:f.item.value.trim(),amt:Math.round(+f.amt.value),cur:f.cur.value,payer:+f.payer.value,among});
+    store.set("ehon-exp",local); f.item.value="";f.amt.value=""; renderAll();});
+  $("#copysplit").addEventListener("click",async()=>{const txt="【青森之旅分帳】\n"+(lines.length?lines.join("\n"):"已經結清");
+    try{await navigator.clipboard.writeText(txt);$("#copied").textContent="已複製！";}catch(e){$("#copied").textContent="無法自動複製，請手動選取上面的文字";}});
+  renderAll();
+})();
 
-  function setStatus(msg){ $('#status').textContent = msg || ''; }
-  function fail(e){
-    console.error(e);
-    if (e && e.code === 'invalid_argument' && !canWrite) return;
-    if (e && e.code === 'invalid_argument') { canWrite = false; document.body.classList.add('ro'); setBanner('你目前只能瀏覽，不能修改。請請建立者把你的權限設成「Contributor」或以上。'); return; }
-    if (e && e.code === 'quota_exceeded') { setBanner('資料已經存滿了，請先刪掉一些項目。'); return; }
-    setBanner('剛剛的修改沒有存成功，請再試一次。');
-  }
-  function setBanner(t){ const b=$('#banner'); b.textContent=''; if(t) b.append(h('div',{class:'banner'},t)); }
-
-  async function write(fn){ try { await fn(); } catch(e){ fail(e); } }
-
-  // ---------- render ----------
+// map
+(function(){
+  const COLORS={d1:"#F2A497",d2:"#F6D27A",d3:"#B9DAA5",d4:"#A8D3E6",d5:"#F2A497",d6:"#F6D27A",idea:"#FFFCF6"};
+  const label=id=>id==="idea"?"備選":(days.find(d=>d.id===id)||{}).label||id;
+  const gmap=p=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.q||p.name);
+  let filter="all", map=null, layer=null, last=null;
+  const shown=()=>MAP_PLACES.filter(p=>filter==="all"||p.day===filter);
+  function fit(b){if(!b.length)return; if(b.length===1)map.setView(b[0],14); else map.fitBounds(b,{padding:[30,30]});}
   function render(){
-    renderNav(); renderStays(); renderDays(); renderList('todos'); renderList('ideas');
-    const n = S.todos.length, d = S.todos.filter(t=>t.done).length;
-    $('#todoCount').textContent = n ? d + ' / ' + n + ' 完成' : '';
-  }
-
-  function renderNav(){
-    const nav = $('#daynav'); nav.textContent='';
-    nav.append(h('a',{href:'#overview'},'航班與住宿'), h('a',{href:'#map-sec'},'地圖'));
-    for (const d of [...S.days].sort(byOrd)) nav.append(h('a',{href:'#day-'+d.id}, d.label));
-    nav.append(h('a',{href:'#tt-sec'},'時刻表'), h('a',{href:'#ideas-sec'},'備選'), h('a',{href:'#todo-sec'},'待辦'));
-  }
-
-  function statusPill(s){
-    const cls = /已|訂好|完成/.test(s||'') ? 'pill done' : /中|待|還沒/.test(s||'') ? 'pill wait' : 'pill';
-    return h('span',{class:cls}, s || '—');
-  }
-
-  function renderStays(){
-    const tb = $('#stays'); tb.textContent='';
-    const list = [...S.stays].sort(byOrd);
-    for (const s of list){
-      if (editing.id === 'stays/'+s.id){
-        tb.append(h('tr',null,h('td',{colspan:4}, stayForm(s))));
-        continue;
-      }
-      tb.append(h('tr',{class:'li-row'},
-        h('td',null,s.dates||''),
-        h('td',null,h('div',{style:'font-weight:500'},s.name||''), s.note? h('div',{style:'color:var(--muted);font-size:13px;white-space:pre-wrap'},s.note):null),
-        h('td',null,statusPill(s.status)),
-        h('td',null,h('div',{class:'tools',style:'opacity:1'},
-          h('button',{class:'ib',title:'編輯',onclick:()=>{editing.id='stays/'+s.id;render();}},'✎'),
-          h('button',{class:'ib del',title:'刪除',onclick:()=>{editing.confirm='stays/'+s.id;render();}},'✕')),
-          editing.confirm==='stays/'+s.id ? confirmBox(()=>write(()=>db.doc('stays/'+s.id).delete())) : null)
-      ));
+    const chips=$("#chips"); chips.textContent="";
+    for(const id of ["all","d1","d2","d3","d4","d5","d6","idea"]) chips.append(h("button",{class:"chip"+(filter===id?" on":""),onclick:()=>{filter=id;render();}},id==="all"?"全部":label(id)));
+    const list=$("#maplist"); list.textContent="";
+    shown().forEach(p=>list.append(h("a",{href:gmap(p),target:"_blank",rel:"noopener"},"📍 "+label(p.day)+"・"+p.name)));
+    if(!window.L){const m=$("#map");m.style.height="auto";m.style.padding="18px";m.textContent="地圖載入失敗，可以直接點下面的地點開 Google 地圖。";return;}
+    if(!map){
+      map=L.map("map",{scrollWheelZoom:false});
+      const osm=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+      let errs=0,sw=false; osm.on("tileerror",()=>{if(++errs>=3&&!sw){sw=true;map.removeLayer(osm);L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Tiles &copy; Esri"}).addTo(map);}});
+      layer=L.layerGroup().addTo(map);
+      const fix=()=>{try{map.invalidateSize();if(last)fit(last);}catch(e){}}; setTimeout(fix,300); window.addEventListener("load",fix); window.addEventListener("resize",fix);
     }
-    if (editing.id === 'stays/new') tb.append(h('tr',null,h('td',{colspan:4}, stayForm(null))));
-  }
-
-  function stayForm(s){
-    const f = h('form',{class:'edit'},
-      h('div',{class:'r'},
-        h('input',{class:'tm',name:'dates',placeholder:'日期，例 3/10',value:s?.dates||'',maxlength:40}),
-        h('input',{class:'tt',name:'name',placeholder:'飯店名稱',value:s?.name||'',maxlength:120,required:true}),
-        h('input',{class:'tm',name:'status',placeholder:'狀態',value:s?.status||'',maxlength:20})),
-      h('textarea',{name:'note',placeholder:'備註（地址、房型、確認事項…）',maxlength:1000}, s?.note||''),
-      h('div',{class:'btns'},
-        h('button',{type:'button',class:'btn ghost',onclick:()=>{editing.id=null;render();}},'取消'),
-        h('button',{class:'btn primary'},'儲存')));
-    f.addEventListener('submit', e=>{
-      e.preventDefault();
-      const v = {dates:f.dates.value.trim(), name:f.name.value.trim(), status:f.status.value.trim(), note:f.note.value.trim()};
-      editing.id=null; render();
-      if (s) write(()=>db.doc('stays/'+s.id).update(v));
-      else write(()=>db.collection('stays').add({...v, ord:maxOrd(S.stays)+1}));
-    });
-    setTimeout(()=>f.name.focus(),0);
-    return f;
-  }
-
-  function confirmBox(onYes){
-    return h('div',{class:'confirm'},'確定要刪除？',
-      h('button',{class:'btn danger',type:'button',onclick:()=>{editing.confirm=null;render();onYes();}},'刪除'),
-      h('button',{class:'btn ghost',type:'button',onclick:()=>{editing.confirm=null;render();}},'取消'));
-  }
-
-  function renderDays(){
-    const box = $('#days'); box.textContent='';
-    for (const d of [...S.days].sort(byOrd)){
-      const items = S.items.filter(i=>i.day===d.id).sort(byOrd);
-      const ul = h('ol',{class:'stops'});
-      items.forEach((it, idx)=>{
-        if (editing.id === 'items/'+it.id){ ul.append(h('li',{class:'stop'}, itemForm(d.id,it))); return; }
-        ul.append(h('li',{class:'stop'+(it.must?' must':'')},
-          h('div',{class:'row'},
-            h('div',{class:'t'}, it.t||''),
-            h('div',{class:'body'},
-              h('div',{class:'ttl'}, it.title||'', it.must? h('span',{class:'must'},'必去'):null),
-              it.note ? h('div',{class:'note'}, it.note) : null,
-              editing.confirm==='items/'+it.id ? confirmBox(()=>write(()=>db.doc('items/'+it.id).delete())) : null),
-            h('div',{class:'tools'},
-              h('button',{class:'ib',title:'往上',disabled:idx===0,onclick:()=>swap(items[idx],items[idx-1])},'↑'),
-              h('button',{class:'ib',title:'往下',disabled:idx===items.length-1,onclick:()=>swap(items[idx],items[idx+1])},'↓'),
-              h('button',{class:'ib',title:'編輯',onclick:()=>{editing.id='items/'+it.id;editing.confirm=null;render();}},'✎'),
-              h('button',{class:'ib del',title:'刪除',onclick:()=>{editing.confirm='items/'+it.id;render();}},'✕')))
-        ));
-      });
-      if (editing.newDay === d.id) ul.append(h('li',{class:'stop'}, itemForm(d.id,null)));
-      box.append(h('section',{class:'day',id:'day-'+d.id},
-        h('div',{class:'day-head'}, h('span',{class:'date'}, d.label), h('span',{class:'title'}, d.title||'')),
-        h('div',{class:'card'}, ul,
-          editing.newDay === d.id ? null : h('button',{class:'add',onclick:()=>{editing.newDay=d.id;editing.id=null;render();}},'＋ 新增行程'))
-      ));
-    }
-  }
-
-  function swap(a,b){
-    if(!a||!b) return;
-    let ao=a.ord??0, bo=b.ord??0;
-    if (ao===bo){ bo = ao + (S.items.indexOf(b) > S.items.indexOf(a) ? 1 : -1); }
-    write(async()=>{ await db.doc('items/'+a.id).update({ord:bo}); await db.doc('items/'+b.id).update({ord:ao}); });
-  }
-
-  function itemForm(day, it){
-    const f = h('form',{class:'edit'},
-      h('div',{class:'r'},
-        h('input',{class:'tm',name:'t',placeholder:'時間',value:it?.t||'',maxlength:30}),
-        h('input',{class:'tt',name:'title',placeholder:'要做什麼／去哪裡',value:it?.title||'',maxlength:120,required:true})),
-      h('textarea',{name:'note',placeholder:'備註（交通、費用、注意事項…）',maxlength:2000}, it?.note||''),
-      h('div',{class:'btns'},
-        h('label',{class:'chk',style:'margin-right:auto'}, h('input',{type:'checkbox',name:'must',checked:!!it?.must}),'標為必去'),
-        h('button',{type:'button',class:'btn ghost',onclick:()=>{editing.id=null;editing.newDay=null;render();}},'取消'),
-        h('button',{class:'btn primary'},'儲存')));
-    f.addEventListener('submit', e=>{
-      e.preventDefault();
-      const v = {t:f.t.value.trim(), title:f.title.value.trim(), note:f.note.value.trim(), must:f.must.checked};
-      editing.id=null; editing.newDay=null; render();
-      if (it) write(()=>db.doc('items/'+it.id).update(v));
-      else write(()=>db.collection('items').add({...v, day, ord:maxOrd(S.items.filter(i=>i.day===day))+1}));
-    });
-    setTimeout(()=>f.title.focus(),0);
-    return f;
-  }
-
-  function renderList(name){
-    const ul = $('#'+name); ul.textContent='';
-    const list = [...S[name]].sort(byOrd);
-    if (!list.length && loaded[name]) ul.append(h('li',{class:'li',style:'color:var(--muted)'},'目前沒有項目'));
-    for (const x of list){
-      const key = name+'/'+x.id;
-      if (editing.id === key){
-        const f = h('form',{class:'edit',style:'width:100%'},
-          h('textarea',{name:'text',maxlength:400}, x.text||''),
-          h('div',{class:'btns'},
-            h('button',{type:'button',class:'btn ghost',onclick:()=>{editing.id=null;render();}},'取消'),
-            h('button',{class:'btn primary'},'儲存')));
-        f.addEventListener('submit',e=>{e.preventDefault(); const t=f.text.value.trim(); editing.id=null; render(); if(t && t!==x.text) write(()=>db.doc(key).update({text:t}));});
-        ul.append(h('li',{class:'li'},f)); setTimeout(()=>f.text.focus(),0); continue;
-      }
-      ul.append(h('li',{class:'li'+(x.done?' done':'')},
-        name==='todos' ? h('input',{type:'checkbox',checked:!!x.done,disabled:!canWrite||!db,onchange:(e)=>write(()=>db.doc(key).update({done:e.target.checked}))}) : h('span',{style:'color:var(--muted)'},'•'),
-        h('div',{class:'txt'}, x.text||'',
-          editing.confirm===key ? confirmBox(()=>write(()=>db.doc(key).delete())) : null),
-        h('div',{class:'tools'},
-          h('button',{class:'ib',title:'編輯',onclick:()=>{editing.id=key;render();}},'✎'),
-          h('button',{class:'ib del',title:'刪除',onclick:()=>{editing.confirm=key;render();}},'✕'))));
-    }
-  }
-
-  document.querySelectorAll('form[data-add]').forEach(f=>{
-    f.addEventListener('submit', e=>{
-      e.preventDefault();
-      const name = f.dataset.add, inp = $('input',f), t = inp.value.trim();
-      if (!t || !db) return;
-      inp.value='';
-      const data = {text:t, ord:maxOrd(S[name])+1};
-      if (name==='todos') data.done=false;
-      write(()=>db.collection(name).add(data));
-    });
-  });
-  $('#addStay').addEventListener('click',()=>{editing.id='stays/new';render();});
-
-  // ---------- data ----------
-  async function start(){
-    if (!window.claude || !window.claude.use){ useStatic(); return; }
-    db = await window.claude.use('db');
-    if (!db){ useStatic(); return; }
-    try {
-      const user = await window.claude.use('user');
-      const c = user && user.can ? await user.can('data.write') : null;
-      if (c === false){ canWrite=false; document.body.classList.add('ro'); setBanner('你目前只能瀏覽。若要一起編輯，請建立者在分享設定把你設為「Contributor」或以上。'); }
-    } catch(e){}
-
-    const timer = setTimeout(()=>{ if(!loaded.items) setStatus('資料還沒載入，網路可能不穩，請稍候。'); }, 10000);
-    for (const name of ['days','items','todos','ideas','stays']){
-      db.collection(name).onSnapshot(snap=>{
-        S[name] = snap.docs.map(d=>({id:d.id, ...d.data()}));
-        if (!snap.metadata.fromCache) loaded[name]=true;
-        if (name==='items' && !snap.metadata.fromCache){ clearTimeout(timer); }
-        const all = loaded.days && loaded.items;
-        setStatus(all ? (S.days.length ? '' : '行程還是空的。') : '載入中…');
-        render();
-      }, err=>{ clearTimeout(timer); console.error(err); setStatus('共享資料連線中斷，請重新整理頁面。'); });
-    }
-  }
-
-  // ---------- map ----------
-  const DAY_COLORS = {d1:"#c8423b",d2:"#d9822b",d3:"#2f7a4a",d4:"#2f6fb0",d5:"#7a4fb5",d6:"#5f6f7e",idea:"#9aa7b2"};
-  const gmap = p => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.q || p.name);
-  let mapFilter = "all", leafMap = null, layer = null, lastBounds = null;
-  function fitTo(b){ if(!b||!b.length) return; if(b.length===1) leafMap.setView(b[0],14); else leafMap.fitBounds(b,{padding:[30,30]}); }
-  function dayLabel(id){ if(id==="idea") return "備選"; const d=(S.days.length?S.days:TRIP_DATA.days).find(x=>x.id===id); return d?d.label:id; }
-  function shown(){ return MAP_PLACES.filter(p=>mapFilter==="all"||p.day===mapFilter); }
-  function renderMapChips(){
-    const box=$('#mapchips'); box.textContent='';
-    const ids=["all","d1","d2","d3","d4","d5","d6","idea"];
-    for(const id of ids){
-      box.append(h('button',{class:'chip'+(mapFilter===id?' on':''),onclick:()=>{mapFilter=id;renderMap();}},
-        id!=="all"? h('i',{style:'background:'+DAY_COLORS[id]}):null, id==="all"?"全部":dayLabel(id)));
-    }
-  }
-  function renderMapList(){
-    const box=$('#maplist'); box.textContent='';
-    shown().forEach((p,i)=>box.append(h('a',{href:gmap(p),target:'_blank',rel:'noopener'},h('i',{style:'background:'+DAY_COLORS[p.day]}),dayLabel(p.day)+'・'+p.name)));
-  }
-  function renderMap(){
-    renderMapChips(); renderMapList();
-    if(!window.L){ const m=$('#map'); m.style.display='grid'; m.style.placeItems='center'; m.style.height='auto'; m.style.padding='18px'; m.textContent='地圖載入失敗，請重新整理，或直接點下面的地點開 Google 地圖。'; return; }
-    if(!leafMap){
-      leafMap=L.map('map',{scrollWheelZoom:false});
-      const osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,
-        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(leafMap);
-      let errs=0, switched=false;
-      osm.on('tileerror',()=>{ if(++errs>=3 && !switched){ switched=true; leafMap.removeLayer(osm);
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles &copy; Esri'}).addTo(leafMap); } });
-      const fix=()=>{ try{ leafMap.invalidateSize(); if(lastBounds) fitTo(lastBounds); }catch(e){} };
-      setTimeout(fix,300); setTimeout(fix,1200);
-      window.addEventListener('load',fix); window.addEventListener('resize',fix);
-      layer=L.layerGroup().addTo(leafMap);
-    }
-    layer.clearLayers();
-    const pts=shown(), bounds=[];
-    const counters={};
-    pts.forEach(p=>{
-      counters[p.day]=(counters[p.day]||0)+1;
-      const n = p.day==="idea" ? "?" : counters[p.day];
-      const icon=L.divIcon({className:'',html:'<div class="pin" style="background:'+DAY_COLORS[p.day]+'"><span>'+n+'</span></div>',iconSize:[26,26],iconAnchor:[13,26],popupAnchor:[0,-24]});
-      const pop=document.createElement('div');
-      pop.append(h('b',null,p.name), h('div',{style:'color:#5f6f7e'},dayLabel(p.day)), h('a',{href:gmap(p),target:'_blank',rel:'noopener'},'在 Google 地圖開啟 ↗'));
-      L.marker([p.lat,p.lng],{icon}).bindPopup(pop).addTo(layer);
-      bounds.push([p.lat,p.lng]);
-    });
-    if(mapFilter!=="all" && mapFilter!=="idea"){
-      const line=pts.map(p=>[p.lat,p.lng]);
-      if(line.length>1) L.polyline(line,{color:DAY_COLORS[mapFilter],weight:3,opacity:.6,dashArray:'6 6'}).addTo(layer);
-    }
-    lastBounds=bounds; fitTo(bounds);
-  }
-  function useStatic(){
-    canWrite=false; document.body.classList.add('ro');
-    for (const k of ['days','items','todos','ideas','stays']){ S[k]=TRIP_DATA[k]||[]; loaded[k]=true; }
-    setStatus(''); render(); renderMap();
+    layer.clearLayers(); const b=[], cnt={};
+    shown().forEach(p=>{cnt[p.day]=(cnt[p.day]||0)+1; const n=p.day==="idea"?"?":cnt[p.day];
+      const icon=L.divIcon({className:"",html:'<div class="pin" style="background:'+COLORS[p.day]+'"><span>'+n+'</span></div>',iconSize:[28,28],iconAnchor:[14,28],popupAnchor:[0,-26]});
+      const pop=h("div",null,h("b",null,p.name),h("br"),label(p.day),h("br"),h("a",{href:gmap(p),target:"_blank",rel:"noopener"},"在 Google 地圖開啟 ↗"));
+      L.marker([p.lat,p.lng],{icon}).bindPopup(pop).addTo(layer); b.push([p.lat,p.lng]);});
+    if(filter!=="all"&&filter!=="idea"&&b.length>1) L.polyline(b,{color:"#3E3A39",weight:3,opacity:.6,dashArray:"6 8"}).addTo(layer);
+    last=b; fit(b);
   }
   render();
-  try{ renderMap(); }catch(e){ console.error(e); }
-  start();
+})();
 })();
 </script>
 </body>
