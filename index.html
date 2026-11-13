@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>青森繪本旅行 2027</title>
+<title>青森蘋果＆雪之旅 2027</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Huninn&display=swap" rel="stylesheet">
@@ -199,6 +199,7 @@ footer svg{width:120px;height:auto;display:block;margin:0 auto 6px}
   <a href="#prep">出發前</a>
   <a href="#pack">行李</a>
   <a href="#split">分帳</a>
+  <a href="#mine">我的花費</a>
   <a href="#ledger">記帳</a>
   <a href="#tt">時刻表</a>
 </div></nav>
@@ -278,7 +279,7 @@ footer svg{width:120px;height:auto;display:block;margin:0 auto 6px}
       </g>
     </svg>
     </div>
-    <h1>青森繪本旅行</h1>
+    <h1>青森蘋果＆雪之旅</h1>
     <div class="sub">2027/3/6（六）～ 3/11（四）・弘前・奧入瀨・青森</div>
     <div class="count" id="count"></div>
   </header>
@@ -353,6 +354,31 @@ footer svg{width:120px;height:auto;display:block;margin:0 auto 6px}
     <p class="note">黃色標籤「共用」是寫在網站裡的帳，大家都看得到；自己加的帳只存在你這台手機或電腦。想讓大家都看到，就把它加進 GitHub 上的 SPLIT 資料。台幣和日圓分開算。</p>
   </section>
 
+  <section id="mine">
+    <h2><span class="dot" style="background:var(--coral)"></span>我目前花的錢</h2>
+    <div class="card">
+      <div class="sum" id="msum"></div>
+      <p class="lday">出發前已付</p>
+      <ul class="exp" id="mlist"></ul>
+      <p class="lday">還沒付</p>
+      <ul class="exp" id="mtodo"></ul>
+      <p class="lday">等人還我／我要還人</p>
+      <ul class="exp" id="mback"></ul>
+      <form class="add" id="madd">
+        <div class="row"><select name="kind"><option value="unpaid">還沒付</option><option value="back">別人要還我</option><option value="owe">我要還別人</option></select>
+          <input class="grow" type="text" name="item" placeholder="項目" required maxlength="60"></div>
+        <div class="row"><input type="number" name="amt" placeholder="金額" min="1" step="1" required style="width:110px">
+          <select name="cur"><option value="TWD">台幣</option><option value="JPY">日圓</option></select>
+          <button class="btn" type="submit">＋ 加</button></div>
+      </form>
+      <details style="margin-top:12px"><summary>匯入資料</summary>
+        <textarea id="mimp" rows="4" style="width:100%;margin-top:8px;border:var(--line);border-radius:10px;padding:8px" placeholder="把 Claude 給你的那段文字貼在這裡"></textarea>
+        <button class="btn ghost" type="button" id="mimpbtn">匯入</button> <span class="note" id="mimpmsg"></span>
+      </details>
+      <p class="note">只存在你自己的手機或電腦，學姊她們看不到。「已付」的金額來自下面「我的記帳」，出發前的花費記在「出發前」那天就會出現在這裡；日圓用記帳區的匯率換算。</p>
+    </div>
+  </section>
+
   <section id="ledger">
     <h2><span class="dot" style="background:var(--wakatake)"></span>我的記帳</h2>
     <div class="card">
@@ -424,7 +450,7 @@ footer svg{width:120px;height:auto;display:block;margin:0 auto 6px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 // ===== 行程資料：直接在 GitHub 上修改這一段就能更新網站 =====
-const TRIP = {"days": [{"id": "d1", "label": "3/6 六", "title": "抵達 → 弘前", "ord": 1}, {"id": "d2", "label": "3/7 日", "title": "弘前 → 奧入瀨", "ord": 2}, {"id": "d3", "label": "3/8 一", "title": "奧入瀨整天", "ord": 3}, {"id": "d4", "label": "3/9 二", "title": "奧入瀨 → 青森", "ord": 4}, {"id": "d5", "label": "3/10 三", "title": "縣立美術館＋淺蟲水族館", "ord": 5}, {"id": "d6", "label": "3/11 四", "title": "青森 → 返台 → 高鐵回家", "ord": 6}, {"id": "d0", "label": "3/5 四", "title": "出發前一晚 → 桃園機場", "ord": 0}], "items": [{"id": "d1-0", "day": "d1", "ord": 1, "t": "14:20", "title": "抵達青森機場（BR122）", "note": "", "must": false, "modes": ["飛機"]}, {"id": "d1-1", "day": "d1", "ord": 2, "t": "15:15", "title": "搭弘南巴士到弘前站前（16:09 到）", "note": "約 54 分，IC 約 ¥1,600，不收現金。備用：16:25 發、17:19 到", "must": true, "modes": ["巴士"]}, {"id": "d1-2", "day": "d1", "ord": 3, "t": "傍晚", "title": "入住弘前飯店", "note": "", "must": false, "modes": ["步行"]}, {"id": "d1-3", "day": "d1", "ord": 4, "t": "晚上", "title": "津輕三味線現場演奏餐廳", "note": "", "must": false, "modes": []}, {"id": "d3-0", "day": "d3", "ord": 1, "t": "09:20–11:30", "title": "春雪山毛櫸林雪地鞋漫步", "note": "¥4,950，含裝備租借；7 歲以上、每團 8 人、日語導覽。前一天 18:00 後取消收全額。看不到樹冰", "must": true, "modes": ["導覽"]}, {"id": "d3-1", "day": "d3", "ord": 2, "t": "中午", "title": "回飯店吃飯、休息", "note": "", "must": false, "modes": []}, {"id": "d3-2", "day": "d3", "ord": 3, "t": "14:00", "title": "奧入瀨溪流巴士觀光", "note": "約 50 分，馬門岩、石戶之瀨看冰柱。另有 12:50 場；太累可改 3/9 早上", "must": true, "modes": ["巴士"]}, {"id": "d3-3", "day": "d3", "ord": 4, "t": "", "title": "泡溫泉；晚餐吃自備的食物", "note": "", "must": false, "modes": []}, {"id": "d6-0", "day": "d6", "ord": 1, "t": "上午", "title": "退房、青森站周邊買伴手禮", "note": "", "must": false, "modes": []}, {"id": "d6-1", "day": "d6", "ord": 2, "t": "11:45", "title": "青森站 11 號站牌搭 JR 巴士 → 12:20 到機場", "note": "約 35 分。備用：12:30 發、13:05 到；最晚 12:40 發", "must": true, "modes": ["巴士"]}, {"id": "d6-2", "day": "d6", "ord": 3, "t": "", "title": "機場午餐", "note": "", "must": false, "modes": []}, {"id": "d6-3", "day": "d6", "ord": 4, "t": "15:30", "title": "搭 BR121 返台", "note": "", "must": false, "modes": ["飛機"]}, {"id": "d5-0", "day": "d5", "ord": 1, "t": "07:30", "title": "古川市場「のっけ丼」", "note": "青森魚菜中心，7:00 開門，飯賣完就提早結束", "must": false, "modes": ["步行"]}, {"id": "d5-1", "day": "d5", "ord": 2, "t": "08:47", "title": "青森站前 6 號站牌搭市營巴士 S51 → 09:09 縣立美術館前", "note": "約 22 分、約 ¥280，可用 IC 卡。開館前可先看隔壁三內丸山遺跡", "must": false, "modes": ["巴士"]}, {"id": "d5-2", "day": "d5", "ord": 3, "t": "09:30–11:40", "title": "青森縣立美術館", "note": "奈良美智「あおもり犬」、夏卡爾〈阿列哥〉四幅全展、志賀理江子特展（展到 3/14）", "must": true, "modes": []}, {"id": "d5-3", "day": "d5", "ord": 4, "t": "11:46", "title": "A1 巴士回青森站（12:09 到），車站附近吃午餐", "note": "", "must": false, "modes": ["巴士"]}, {"id": "d5-4", "day": "d5", "ord": 5, "t": "13:18", "title": "青い森鐵道 青森 → 淺蟲溫泉（約 13:38 到）", "note": "¥540，下車走路約 10 分到水族館", "must": false, "modes": ["鐵道"]}, {"id": "d5-5", "day": "d5", "ord": 6, "t": "約 13:50–15:30", "title": "淺蟲水族館", "note": "9:00–17:00，¥1,200。海底隧道水槽、配津輕三味線的海豚表演（先查場次）", "must": true, "modes": ["步行"]}, {"id": "d5-6", "day": "d5", "ord": 7, "t": "15:40", "title": "「ゆ〜さ淺蟲」展望浴場", "note": "看陸奧灣泡湯，¥360，淺蟲溫泉站走路 1 分", "must": false, "modes": ["步行"]}, {"id": "d5-7", "day": "d5", "ord": 8, "t": "16:42", "title": "青い森鐵道 淺蟲溫泉 → 青森（17:07 到）", "note": "備用：17:35 發、18:00 到", "must": false, "modes": ["鐵道"]}, {"id": "d0-0", "day": "d0", "ord": 1, "t": "", "title": "高鐵到桃園站 → 機場捷運到 A13 機場第二航廈", "note": "捷運約 20 分", "must": false, "modes": ["高鐵", "捷運"]}, {"id": "d0-1", "day": "d0", "ord": 2, "t": "16:00 後", "title": "入住 CHO Stay 膠囊旅館（第二航廈 5 樓，已訂）", "note": "長榮在第二航廈，隔天走下樓就能報到。BR122 09:55 起飛，建議 07:30 前到長榮櫃檯", "must": false, "modes": []}, {"id": "d6-9", "day": "d6", "ord": 5, "t": "19:00", "title": "抵達桃園機場 → 機場捷運到高鐵桃園站 → 高鐵回家", "note": "高鐵票建議訂 20:30 以後的車，或到了再買自由座，以防航班延誤", "must": false, "modes": ["捷運", "高鐵"]}, {"id": "d2-0", "day": "d2", "ord": 1, "t": "早上", "title": "退房、行李寄放飯店", "note": "", "must": false, "modes": []}, {"id": "d2-1", "day": "d2", "ord": 2, "t": "09:30–10:20", "title": "弘前煉瓦倉庫美術館", "note": "弘前市吉野町 2-1，9:30–17:00。蘋果酒工廠改建，有奈良美智作品和重現的小木屋咖啡廳；展覽「大正⇆令和アヴァンギャルド」展到 2027/5/16", "must": true, "modes": ["步行"]}, {"id": "d2-2", "day": "d2", "ord": 3, "t": "約 10:30", "title": "弘前城・弘前公園、舊弘前市立圖書館", "note": "1906 年的紅圓頂八角雙塔洋館；附近還有前川國男設計的市役所、市民會館", "must": false, "modes": ["步行"]}, {"id": "d2-3", "day": "d2", "ord": 4, "t": "約 11:15", "title": "藤田紀念庭園・大正浪漫喫茶室（午餐）", "note": "9:30–16:30（16:00 最後點餐）。蘋果派飲料套餐 ¥990；也有蕎麥可麗餅、弘前蘋果咖哩", "must": true, "modes": ["步行"]}, {"id": "d2-4", "day": "d2", "ord": 5, "t": "12:24", "title": "回弘前站拿行李 → JR 到青森（13:12）", "note": "搭巴士或計程車回車站；來不及就搭 13:06（約 13:50 到）", "must": false, "modes": ["巴士", "JR"]}, {"id": "d2-5", "day": "d2", "ord": 6, "t": "", "title": "🛒 在青森站附近買兩晚的晚餐（3/7、3/8）", "note": "泡麵、飯糰、點心、飲料。奧入瀨附近沒有商店，要一次買齊", "must": true, "modes": []}, {"id": "d2-6", "day": "d2", "ord": 7, "t": "15:00", "title": "星野接駁車（青森站西口廣場出發）", "note": "車程約 150 分。付費、兩天前預約：大人單程 ¥4,000", "must": true, "modes": ["接駁車"]}, {"id": "d2-7", "day": "d2", "ord": 8, "t": "約 17:30", "title": "抵達星野，房間吃自備晚餐、泡溫泉", "note": "有帶快煮壺", "must": false, "modes": []}, {"id": "d4-0", "day": "d4", "ord": 1, "t": "早上", "title": "泡溫泉、吃早餐", "note": "3/8 沒參加溪流巴士觀光的話，可報 7:00 或 8:10 場", "must": false, "modes": []}, {"id": "d4-1", "day": "d4", "ord": 2, "t": "10:30", "title": "星野接駁車回青森站", "note": "付費、須預約，大人單程 ¥4,000，約 12:30 到", "must": true, "modes": ["接駁車"]}, {"id": "d4-2", "day": "d4", "ord": 3, "t": "中午", "title": "ReLabo 寄放行李、午餐", "note": "15:00 才能入住", "must": false, "modes": []}, {"id": "d4-3", "day": "d4", "ord": 4, "t": "下午", "title": "廣田神社", "note": "青森站走路約 15 分；手水舍裡有蘋果，還有睡魔造型繪馬", "must": true, "modes": ["步行"]}, {"id": "d4-4", "day": "d4", "ord": 5, "t": "", "title": "善知鳥神社", "note": "青森市發祥地，順路", "must": false, "modes": ["步行"]}, {"id": "d4-5", "day": "d4", "ord": 6, "t": "傍晚", "title": "港邊散步：AOMORI 地標、八甲田丸、青森灣大橋", "note": "地標在青森站旁的 A-BEACH", "must": false, "modes": ["步行"]}, {"id": "d4-6", "day": "d4", "ord": 7, "t": "", "title": "A-Factory、睡魔之家 Wa Rasse", "note": "A-Factory 二樓可買試飲卡品嘗蘋果酒", "must": false, "modes": ["步行"]}, {"id": "d4-7", "day": "d4", "ord": 8, "t": "18:15", "title": "晚餐：大福丸（居酒屋）", "note": "青森市安方 1-2-11，青森站走路 3–5 分。16:30–21:30；每晚 18:35、19:45 有津輕三味線現場演奏，可以自己釣扇貝。建議先訂位", "must": true, "modes": ["步行"]}], "stays": [{"id": "s0", "ord": 0, "dates": "3/5", "name": "町·草休行館 CHO Stay Capsule Hotel（桃園機場第二航廈內）", "status": "已訂", "note": "桃園市大園區航站南路 9 號 5 樓南側。到第二航廈 3 樓出境大廳，找南側 22 號報到櫃檯旁的手扶梯上 5 樓。入住 16:00 後、退房 10:00 前；共用衛浴，房內不能吃東西"}, {"id": "s1", "ord": 1, "dates": "3/6", "name": "Art Hotel 弘前 City（標準三人房）", "status": "已訂", "note": "22㎡、3 張單人床，弘前站走路 1 分鐘；入住 14:00、退房 11:00"}, {"id": "s2", "ord": 2, "dates": "3/7、3/8", "name": "星野 奧入瀨溪流飯店", "status": "已決定，待訂（官網）", "note": "一泊一食（含早餐自助餐 6:30–10:00），晚餐自備；預付，入住前 3 天內取消收全額。青森站接駁車約 150 分"}, {"id": "s3", "ord": 3, "dates": "3/9、3/10", "name": "ReLabo Medical Spa & Stay", "status": "已訂", "note": "雙人房 1 間＋單人房 1 間（不含早餐）。與青森站相連，有大浴場"}], "todos": [{"id": "t1", "ord": 1, "done": false, "text": "向星野確認 3 月有沒有八甲田樹冰團"}, {"id": "t2", "ord": 2, "done": true, "text": "訂機票（BR122 / BR121）已完成"}, {"id": "t3", "ord": 3, "done": true, "text": "ReLabo 2 晚（3/9、3/10）：雙人房＋單人房，已完成"}, {"id": "t4", "ord": 4, "done": false, "text": "星野官網訂 2 晚（3/7、3/8）一泊一食"}, {"id": "t5", "ord": 5, "done": true, "text": "預訂弘前 Art Hotel 弘前 City 標準三人房（3/6）已完成"}, {"id": "t6", "ord": 6, "done": false, "text": "預約星野接駁車：3/7 15:00 青森站西口出發、3/9 10:30 飯店出發（3 人來回共 ¥24,000）"}, {"id": "t7", "ord": 7, "done": false, "text": "報名雪地鞋漫步和溪流巴士觀光"}, {"id": "t8", "ord": 8, "done": false, "text": "每人準備 IC 卡"}, {"id": "t9", "ord": 9, "done": false, "text": "查機場→弘前、青森站→機場巴士時刻"}, {"id": "t10", "ord": 10, "done": false, "text": "確認美術館 3/10 有開館"}, {"id": "t20", "ord": 20, "done": false, "text": "3/7 買兩晚晚餐（泡麵等）；帶快煮壺、餐具"}], "ideas": [{"id": "i1", "ord": 1, "text": "樹冰方案 A：住星野時跟飯店樹冰團去，排 3/8（要等飯店公布）"}, {"id": "i2", "ord": 2, "text": "樹冰方案 B：3/10 從青森站搭 JR 巴士去八甲田纜車＋酸湯溫泉；美術館和水族館改到 3/9 下午或 3/11 上午擇一"}]};
+const TRIP = {"days": [{"id": "d1", "label": "3/6 六", "title": "抵達 → 弘前", "ord": 1}, {"id": "d2", "label": "3/7 日", "title": "弘前 → 奧入瀨", "ord": 2}, {"id": "d3", "label": "3/8 一", "title": "奧入瀨整天", "ord": 3}, {"id": "d4", "label": "3/9 二", "title": "奧入瀨 → 青森", "ord": 4}, {"id": "d5", "label": "3/10 三", "title": "縣立美術館＋淺蟲水族館", "ord": 5}, {"id": "d6", "label": "3/11 四", "title": "青森 → 返台 → 高鐵回家", "ord": 6}, {"id": "d0", "label": "3/5 五", "title": "出發前一晚 → 桃園機場", "ord": 0}], "items": [{"id": "d1-0", "day": "d1", "ord": 1, "t": "14:20", "title": "抵達青森機場（BR122）", "note": "", "must": false, "modes": ["飛機"]}, {"id": "d1-1", "day": "d1", "ord": 2, "t": "15:15", "title": "搭弘南巴士到弘前站前（16:09 到）", "note": "約 54 分，IC 約 ¥1,600，不收現金。備用：16:25 發、17:19 到", "must": true, "modes": ["巴士"]}, {"id": "d1-2", "day": "d1", "ord": 3, "t": "傍晚", "title": "入住弘前飯店", "note": "", "must": false, "modes": ["步行"]}, {"id": "d1-3", "day": "d1", "ord": 4, "t": "晚上", "title": "津輕三味線現場演奏餐廳", "note": "", "must": false, "modes": []}, {"id": "d3-0", "day": "d3", "ord": 1, "t": "09:20–11:30", "title": "春雪山毛櫸林雪地鞋漫步", "note": "¥4,950，含裝備租借；7 歲以上、每團 8 人、日語導覽。前一天 18:00 後取消收全額。看不到樹冰", "must": true, "modes": ["導覽"]}, {"id": "d3-1", "day": "d3", "ord": 2, "t": "中午", "title": "回飯店吃飯、休息", "note": "", "must": false, "modes": []}, {"id": "d3-2", "day": "d3", "ord": 3, "t": "14:00", "title": "奧入瀨溪流巴士觀光", "note": "約 50 分，馬門岩、石戶之瀨看冰柱。另有 12:50 場；太累可改 3/9 早上", "must": true, "modes": ["巴士"]}, {"id": "d3-3", "day": "d3", "ord": 4, "t": "", "title": "泡溫泉；晚餐吃自備的食物", "note": "", "must": false, "modes": []}, {"id": "d6-0", "day": "d6", "ord": 1, "t": "上午", "title": "退房、青森站周邊買伴手禮", "note": "", "must": false, "modes": []}, {"id": "d6-1", "day": "d6", "ord": 2, "t": "11:45", "title": "青森站 11 號站牌搭 JR 巴士 → 12:20 到機場", "note": "約 35 分。備用：12:30 發、13:05 到；最晚 12:40 發", "must": true, "modes": ["巴士"]}, {"id": "d6-2", "day": "d6", "ord": 3, "t": "", "title": "機場午餐", "note": "", "must": false, "modes": []}, {"id": "d6-3", "day": "d6", "ord": 4, "t": "15:30", "title": "搭 BR121 返台", "note": "", "must": false, "modes": ["飛機"]}, {"id": "d5-0", "day": "d5", "ord": 1, "t": "07:30", "title": "古川市場「のっけ丼」", "note": "青森魚菜中心，7:00 開門，飯賣完就提早結束", "must": false, "modes": ["步行"]}, {"id": "d5-1", "day": "d5", "ord": 2, "t": "08:47", "title": "青森站前 6 號站牌搭市營巴士 S51 → 09:09 縣立美術館前", "note": "約 22 分、約 ¥280，可用 IC 卡。開館前可先看隔壁三內丸山遺跡", "must": false, "modes": ["巴士"]}, {"id": "d5-2", "day": "d5", "ord": 3, "t": "09:30–11:40", "title": "青森縣立美術館", "note": "奈良美智「あおもり犬」、夏卡爾〈阿列哥〉四幅全展、志賀理江子特展（展到 3/14）", "must": true, "modes": []}, {"id": "d5-3", "day": "d5", "ord": 4, "t": "11:46", "title": "A1 巴士回青森站（12:09 到），車站附近吃午餐", "note": "", "must": false, "modes": ["巴士"]}, {"id": "d5-4", "day": "d5", "ord": 5, "t": "13:18", "title": "青い森鐵道 青森 → 淺蟲溫泉（約 13:38 到）", "note": "¥540，下車走路約 10 分到水族館", "must": false, "modes": ["鐵道"]}, {"id": "d5-5", "day": "d5", "ord": 6, "t": "約 13:50–15:30", "title": "淺蟲水族館", "note": "9:00–17:00，¥1,200。海底隧道水槽、配津輕三味線的海豚表演（先查場次）", "must": true, "modes": ["步行"]}, {"id": "d5-6", "day": "d5", "ord": 7, "t": "15:40", "title": "「ゆ〜さ淺蟲」展望浴場", "note": "看陸奧灣泡湯，¥360，淺蟲溫泉站走路 1 分", "must": false, "modes": ["步行"]}, {"id": "d5-7", "day": "d5", "ord": 8, "t": "16:42", "title": "青い森鐵道 淺蟲溫泉 → 青森（17:07 到）", "note": "備用：17:35 發、18:00 到", "must": false, "modes": ["鐵道"]}, {"id": "d0-0", "day": "d0", "ord": 1, "t": "", "title": "高鐵到桃園站 → 機場捷運到 A13 機場第二航廈", "note": "捷運約 20 分", "must": false, "modes": ["高鐵", "捷運"]}, {"id": "d0-1", "day": "d0", "ord": 2, "t": "16:00 後", "title": "入住 CHO Stay 膠囊旅館（第二航廈 5 樓，已訂）", "note": "長榮在第二航廈，隔天走下樓就能報到。BR122 09:55 起飛，建議 07:30 前到長榮櫃檯", "must": false, "modes": []}, {"id": "d6-9", "day": "d6", "ord": 5, "t": "19:00", "title": "抵達桃園機場 → 機場捷運到高鐵桃園站 → 高鐵回家", "note": "高鐵票建議訂 20:30 以後的車，或到了再買自由座，以防航班延誤", "must": false, "modes": ["捷運", "高鐵"]}, {"id": "d2-0", "day": "d2", "ord": 1, "t": "早上", "title": "退房、行李寄放飯店", "note": "", "must": false, "modes": []}, {"id": "d2-1", "day": "d2", "ord": 2, "t": "09:30–10:20", "title": "弘前煉瓦倉庫美術館", "note": "弘前市吉野町 2-1，9:30–17:00。蘋果酒工廠改建，有奈良美智作品和重現的小木屋咖啡廳；展覽「大正⇆令和アヴァンギャルド」展到 2027/5/16", "must": true, "modes": ["步行"]}, {"id": "d2-2", "day": "d2", "ord": 3, "t": "約 10:30", "title": "弘前城・弘前公園、舊弘前市立圖書館", "note": "1906 年的紅圓頂八角雙塔洋館；附近還有前川國男設計的市役所、市民會館", "must": false, "modes": ["步行"]}, {"id": "d2-3", "day": "d2", "ord": 4, "t": "約 11:15", "title": "藤田紀念庭園・大正浪漫喫茶室（午餐）", "note": "9:30–16:30（16:00 最後點餐）。蘋果派飲料套餐 ¥990；也有蕎麥可麗餅、弘前蘋果咖哩", "must": true, "modes": ["步行"]}, {"id": "d2-4", "day": "d2", "ord": 5, "t": "12:24", "title": "回弘前站拿行李 → JR 到青森（13:12）", "note": "搭巴士或計程車回車站；來不及就搭 13:06（約 13:50 到）", "must": false, "modes": ["巴士", "JR"]}, {"id": "d2-5", "day": "d2", "ord": 6, "t": "", "title": "🛒 在青森站附近買兩晚的晚餐（3/7、3/8）", "note": "泡麵、飯糰、點心、飲料。奧入瀨附近沒有商店，要一次買齊", "must": true, "modes": []}, {"id": "d2-6", "day": "d2", "ord": 7, "t": "15:00", "title": "星野接駁車（青森站西口巴士站，已預約）", "note": "車程約 150 分。現場付款：每人 ¥4,000，建議備好現金。提早 10 分鐘到", "must": true, "modes": ["接駁車"]}, {"id": "d2-7", "day": "d2", "ord": 8, "t": "約 17:30", "title": "抵達星野，房間吃自備晚餐、泡溫泉", "note": "有帶快煮壺", "must": false, "modes": []}, {"id": "d4-0", "day": "d4", "ord": 1, "t": "早上", "title": "泡溫泉、吃早餐", "note": "3/8 沒參加溪流巴士觀光的話，可報 7:00 或 8:10 場", "must": false, "modes": []}, {"id": "d4-1", "day": "d4", "ord": 2, "t": "10:30", "title": "星野接駁車回青森站（已預約）", "note": "現場付款：每人 ¥4,000，建議備好現金。約 12:30 到青森站西口", "must": true, "modes": ["接駁車"]}, {"id": "d4-2", "day": "d4", "ord": 3, "t": "中午", "title": "ReLabo 寄放行李、午餐", "note": "15:00 才能入住", "must": false, "modes": []}, {"id": "d4-3", "day": "d4", "ord": 4, "t": "下午", "title": "廣田神社", "note": "青森站走路約 15 分；手水舍裡有蘋果，還有睡魔造型繪馬", "must": true, "modes": ["步行"]}, {"id": "d4-4", "day": "d4", "ord": 5, "t": "", "title": "善知鳥神社", "note": "青森市發祥地，順路", "must": false, "modes": ["步行"]}, {"id": "d4-5", "day": "d4", "ord": 6, "t": "傍晚", "title": "港邊散步：AOMORI 地標、八甲田丸、青森灣大橋", "note": "地標在青森站旁的 A-BEACH", "must": false, "modes": ["步行"]}, {"id": "d4-6", "day": "d4", "ord": 7, "t": "", "title": "A-Factory、睡魔之家 Wa Rasse", "note": "A-Factory 二樓可買試飲卡品嘗蘋果酒", "must": false, "modes": ["步行"]}, {"id": "d4-7", "day": "d4", "ord": 8, "t": "18:15", "title": "晚餐：大福丸（居酒屋）", "note": "青森市安方 1-2-11，青森站走路 3–5 分。16:30–21:30；每晚 18:35、19:45 有津輕三味線現場演奏，可以自己釣扇貝。建議先訂位", "must": true, "modes": ["步行"]}], "stays": [{"id": "s0", "ord": 0, "dates": "3/5", "name": "町·草休行館 CHO Stay Capsule Hotel（桃園機場第二航廈內）", "status": "已訂", "note": "桃園市大園區航站南路 9 號 5 樓南側。到第二航廈 3 樓出境大廳，找南側 22 號報到櫃檯旁的手扶梯上 5 樓。入住 16:00 後、退房 10:00 前；共用衛浴，房內不能吃東西"}, {"id": "s1", "ord": 1, "dates": "3/6", "name": "Art Hotel 弘前 City（標準三人房）", "status": "已訂", "note": "22㎡、3 張單人床，弘前站走路 1 分鐘；入住 14:00、退房 11:00"}, {"id": "s2", "ord": 2, "dates": "3/7、3/8", "name": "星野 奧入瀨溪流飯店（高級房，3 人）", "status": "已訂", "note": "一泊一食（含早餐自助餐 6:30–10:00），晚餐自備。入住 15:00、退房 12:00。總額 ¥141,300（含溫泉稅），每人 ¥47,100；預付，入住前 3 天內取消收全額。青森站接駁車約 150 分"}, {"id": "s3", "ord": 3, "dates": "3/9、3/10", "name": "ReLabo Medical Spa & Stay", "status": "已訂", "note": "雙人房 1 間＋單人房 1 間（不含早餐）。與青森站相連，有大浴場"}], "todos": [{"id": "t1", "ord": 1, "done": false, "text": "向星野確認 3 月有沒有八甲田樹冰團"}, {"id": "t2", "ord": 2, "done": true, "text": "訂機票（BR122 / BR121）已完成"}, {"id": "t3", "ord": 3, "done": true, "text": "ReLabo 2 晚（3/9、3/10）：雙人房＋單人房，已完成"}, {"id": "t4", "ord": 4, "done": true, "text": "星野官網訂 2 晚（3/7、3/8）一泊一食，已完成（¥141,300）"}, {"id": "t5", "ord": 5, "done": true, "text": "預訂弘前 Art Hotel 弘前 City 標準三人房（3/6）已完成"}, {"id": "t6", "ord": 6, "done": true, "text": "預約星野接駁車 3/7 15:00 青森站西口、3/9 10:30 飯店出發，已完成（現場付款，每人單程 ¥4,000）"}, {"id": "t7", "ord": 7, "done": false, "text": "報名雪地鞋漫步和溪流巴士觀光"}, {"id": "t8", "ord": 8, "done": false, "text": "每人準備 IC 卡"}, {"id": "t9", "ord": 9, "done": false, "text": "查機場→弘前、青森站→機場巴士時刻"}, {"id": "t10", "ord": 10, "done": false, "text": "確認美術館 3/10 有開館"}, {"id": "t20", "ord": 20, "done": false, "text": "3/7 買兩晚晚餐（泡麵等）；帶快煮壺、餐具"}], "ideas": [{"id": "i1", "ord": 1, "text": "樹冰方案 A：住星野時跟飯店樹冰團去，排 3/8（要等飯店公布）"}, {"id": "i2", "ord": 2, "text": "樹冰方案 B：3/10 從青森站搭 JR 巴士去八甲田纜車＋酸湯溫泉；美術館和水族館改到 3/9 下午或 3/11 上午擇一"}]};
 const MAP_PLACES = [
  {day:"d1", name:"青森機場", lat:40.735302, lng:140.690491, q:"青森空港"},
  {day:"d1", name:"弘前站", lat:40.599669, lng:140.485189, q:"弘前駅"},
@@ -455,7 +481,8 @@ const SPLIT = {
   members: ["我","學姊","學姊的姊姊"],
   expenses: [
     {item:"弘前飯店 Art Hotel 弘前 City（3/6）", amt:3056, cur:"TWD", payer:0, among:[0,1,2]},
-    {item:"桃園機場膠囊旅館（3/5）", amt:5850, cur:"TWD", payer:1, among:[0,1,2]}
+    {item:"桃園機場膠囊旅館（3/5）", amt:5850, cur:"TWD", payer:1, among:[0,1,2]},
+    {item:"星野奧入瀨溪流飯店（3/7、3/8）", amt:141300, cur:"JPY", payer:0, among:[0,1,2]}
   ]
 };
 const PREP = [
@@ -553,7 +580,10 @@ function checklist(key,items,listEl,barEl){
 // todo: default checked from data
 (function(){
   const key="ehon-todo"; const st=store.get(key,null);
-  if(!st){const init={};for(const t of TRIP.todos) if(t.done) init[t.id]=true; store.set(key,init);}
+  // items marked done in the file get ticked once on every device, even if the page was opened before
+  const cur=st||{}; const seen=store.get("ehon-todo-seen",[]);
+  for(const t of TRIP.todos) if(t.done && !seen.includes(t.id)){cur[t.id]=true; seen.push(t.id);}
+  store.set(key,cur); store.set("ehon-todo-seen",seen);
   checklist(key,[...TRIP.todos].sort((a,b)=>a.ord-b.ord).map(t=>({id:t.id,text:t.text})),$("#todo-list"),$("#todo-bar"));
 })();
 checklist("ehon-prep",PREP.map((p,i)=>({id:"p"+i,text:p[0]})),$("#prep-list"),$("#prep-bar"));
@@ -629,6 +659,40 @@ checklist("ehon-prep",PREP.map((p,i)=>({id:"p"+i,text:p[0]})),$("#prep-list"),$(
 })();
 
 
+// my spending so far (local only, built from the ledger + local unpaid/back lists)
+window.renderMine=function(){
+  const fmt=(n,c)=>(n<0?"－":"")+(c==="JPY"?"¥":"NT$")+Math.abs(Math.round(n)).toLocaleString();
+  const L=store.get("ehon-ledger",[]), M=store.get("ehon-mine",{unpaid:[],back:[]}), r=parseFloat(store.get("ehon-rate",""));
+  const p={TWD:0,JPY:0}; L.forEach(x=>p[x.cur]+=x.amt);
+  const s=$("#msum"); s.textContent="";
+  s.append(h("div",{class:"box tw"},"已花（台幣）",h("b",null,fmt(p.TWD,"TWD"))),h("div",{class:"box"},"已花（日圓）",h("b",null,fmt(p.JPY,"JPY"))));
+  if(r>0) s.append(h("div",{class:"box all"},"合計約",h("b",null,fmt(p.TWD+p.JPY*r,"TWD"))));
+  const ml=$("#mlist"); ml.textContent="";
+  const pre=L.filter(x=>x.day==="出發前");
+  if(!pre.length) ml.append(h("li",null,h("div",{class:"note"},"還沒有。")));
+  pre.forEach(x=>ml.append(h("li",null,h("div",null,x.item),h("div",{class:"amt"},fmt(x.amt,x.cur)))));
+  const fill=(el,arr,key)=>{el.textContent=""; if(!arr.length) el.append(h("li",null,h("div",{class:"note"},"沒有。")));
+    arr.forEach((x,i)=>el.append(h("li",null,h("div",null,x.item),h("div",{class:"amt"},fmt(x.amt,x.cur)),
+      h("button",{class:"x",type:"button",title:"刪除",onclick:()=>{M[key].splice(i,1);store.set("ehon-mine",M);renderMine();}},"✕"))));};
+  fill($("#mtodo"),M.unpaid,"unpaid"); fill($("#mback"),M.back,"back");
+};
+(function(){
+  $("#madd").addEventListener("submit",ev=>{ev.preventDefault();const f=ev.target;const M=store.get("ehon-mine",{unpaid:[],back:[]});
+    const amt=Math.round(+f.amt.value), it=f.item.value.trim();
+    if(f.kind.value==="unpaid") M.unpaid.push({item:it,amt,cur:f.cur.value});
+    else M.back.push({item:it,amt:f.kind.value==="owe"?-amt:amt,cur:f.cur.value});
+    store.set("ehon-mine",M); f.item.value=""; f.amt.value=""; renderMine();});
+  $("#mimpbtn").addEventListener("click",()=>{
+    try{const d=JSON.parse($("#mimp").value.trim()); const L=store.get("ehon-ledger",[]), M=store.get("ehon-mine",{unpaid:[],back:[]});
+      const same=(a,b)=>a.item===b.item&&a.amt===b.amt&&a.cur===b.cur; let n=0;
+      (d.ledger||[]).forEach(x=>{if(!L.some(y=>same(x,y))){L.push(x);n++;}});
+      ["unpaid","back"].forEach(k=>(d[k]||[]).forEach(x=>{if(!M[k].some(y=>same(x,y))){M[k].push(x);n++;}}));
+      store.set("ehon-ledger",L); store.set("ehon-mine",M); $("#mimp").value=""; $("#mimpmsg").textContent="匯入 "+n+" 筆！";
+      renderMine(); if(window.renderLedger) renderLedger();
+    }catch(e){$("#mimpmsg").textContent="格式不對，請整段完整貼上";}});
+  renderMine();
+})();
+
 // personal ledger
 (function(){
   let L=store.get("ehon-ledger",[]); let rate=store.get("ehon-rate",""); const rin=$("#lrate"); rin.value=rate;
@@ -637,6 +701,7 @@ checklist("ehon-prep",PREP.map((p,i)=>({id:"p"+i,text:p[0]})),$("#prep-list"),$(
   const today=new Date(), lab=(today.getMonth()+1)+"/"+today.getDate()+" "; const hit=DAYS.find(d=>d.startsWith(lab)); if(hit) sel.value=hit;
   const fmt=(n,c)=>(c==="JPY"?"¥":"NT$")+Math.round(n).toLocaleString();
   function render(){
+    L=store.get("ehon-ledger",[]); if(window.renderMine) renderMine();
     const jp=L.filter(x=>x.cur==="JPY").reduce((a,x)=>a+x.amt,0), tw=L.filter(x=>x.cur==="TWD").reduce((a,x)=>a+x.amt,0);
     const r=parseFloat(rate); const s=$("#lsum"); s.textContent="";
     s.append(h("div",{class:"box"},"日圓",h("b",null,fmt(jp,"JPY"))),h("div",{class:"box tw"},"台幣",h("b",null,fmt(tw,"TWD"))));
@@ -658,6 +723,7 @@ checklist("ehon-prep",PREP.map((p,i)=>({id:"p"+i,text:p[0]})),$("#prep-list"),$(
       box.append(ul);
     }
   }
+  window.renderLedger=render;
   rin.addEventListener("input",()=>{rate=rin.value;store.set("ehon-rate",rate);render();});
   $("#ladd").addEventListener("submit",ev=>{ev.preventDefault();const f=ev.target;
     L.push({day:f.day.value,cat:f.cat.value,item:f.item.value.trim(),amt:Math.round(+f.amt.value),cur:f.cur.value,pay:f.pay.value});
